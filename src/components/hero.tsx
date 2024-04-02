@@ -75,6 +75,10 @@ const HeroSection: React.FC = () => {
           <p className="max-w mt-8 mb-4 text-2xl text-center mt-6 text-gray-400 relative z-20">
             Influyst easily unlocks the full value and reach of creators
           </p>
+{/* <button className="z-20 py-4 px-8 bg-brand-purple border-6 border-brand-purple-border text-white rounded-full shadow-md hover:shadow-inner font-regular hover:bg-brand-purple-hover hover:border-brand-purple-hover-border transition ease-in-out mt-8">
+              <Link href="/signup">Create Your Influencer Resume</Link>
+            </button> */}
+
           {!submitted ? (
             <form onSubmit={handleSubmit} className="flex items-center border-6 border-brand-purple-border mr-2 ml-2 rounded-full shadow-md transition ease-in-out mt-8 bg-white">
               <input 
