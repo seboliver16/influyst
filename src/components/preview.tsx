@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
-import { FaCopy } from "react-icons/fa";
+import { FaCopy, FaRocket } from "react-icons/fa";
+import Image from 'next/image';
 
 interface PlatformProps {
   name: string;
@@ -26,12 +27,7 @@ const Stat: React.FC<StatProps> = ({ title, value, date }) => {
       <div className="flex flex-col">
         <div className="flex gap-5 justify-between px-px text-sm text-black text-opacity-80">
           <div>{title}</div>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/07007740db08c46c2c9f36bce7947b4936f2a0e7d0f13735f07d231f73dfed89?apiKey=9805453a66104d21b27b8e64011dcf8d&"
-            alt="Information icon"
-            className="shrink-0 self-start w-5 aspect-square stroke-[1px] stroke-indigo-400"
-          />
+          <FaRocket size={15} className="text-indigo-400" />
         </div>
         <div className="flex flex-col mt-2">
           <div className="text-3xl font-semibold text-black">{value}</div>
@@ -91,17 +87,18 @@ const CopyIcon: React.FC = () => {
   );
 };
 
+
 function Preview() {
   return (
     <div className="flex flex-col grow px-12 pt-4 pb-16 rounded-2xl border border-gray-300 border-opacity-50 rounded-3xl max-md:px-5 max-md:mt-10 max-md:max-w-full max-sm:mb-11 px-10">
       <CopyIcon></CopyIcon>
       <div className="flex items-center justify-center flex-row pt-8 ">
   <img
-    loading="lazy"
-    src="https://cdn.builder.io/api/v1/image/assets/TEMP/6c7533d2437a5f5e49b156a39044d1dacf7ce8c1d2d3154b91c8a4b4dcfa416e?apiKey=9805453a66104d21b27b8e64011dcf8d&"
-    alt="Profile picture"
-    className="w-[140px] aspect-[1.04]"
-  />
+  src='/seb.png'
+  alt="Seb's image"
+  width={140}
+  height={140}
+/>
   <div className="ml-4">
     <div className="font-bold text-xl">Startup Seb</div>
     <div className="text-opacity-80">influyst@gmail.com</div>

@@ -59,9 +59,9 @@ const HeroSection: React.FC = () => {
       <div className="h-screen relative w-full overflow-hidden bg-white flex flex-col items-center justify-center rounded-lg">
         <Navbar className="top-8" />
         <div className="absolute inset-0 w-full h-full bg-white z-20 [mask-image:radial-gradient(transparent,white)] pointer-events-none" />
-        <Boxes className="" />
+        {/* {!isMobile && <Boxes className="" />} Conditionally render Boxes */}
         <div className="mt-20 z-20 flex flex-col justify-center items-center text-center">
-          <h1 className="md:text-7xl text-6xl text-gray-900 relative z-20 font-medium pb-4">
+          <h1 className="md:text-7xl text-6xl text-gray-900 relative z-20 font-medium pb-4 pl-4 pr-4">
             Monetize your social media
           </h1>
           <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
@@ -72,7 +72,7 @@ const HeroSection: React.FC = () => {
               seconds.
             </span>
           </div>
-          <p className="max-w mt-8 mb-4 text-2xl text-center mt-6 text-gray-400 relative z-20">
+          <p className="max-w mt-8 mb-4 text-2xl text-center mt-6 text-gray-400 relative z-20 pl-4 pr-4">
             Influyst easily unlocks the full value and reach of creators
           </p>
 {/* <button className="z-20 py-4 px-8 bg-brand-purple border-6 border-brand-purple-border text-white rounded-full shadow-md hover:shadow-inner font-regular hover:bg-brand-purple-hover hover:border-brand-purple-hover-border transition ease-in-out mt-8">
@@ -85,7 +85,7 @@ const HeroSection: React.FC = () => {
                 type="email" 
                 value={email}
                 onChange={handleChange}
-                placeholder="Enter your email to join" 
+                placeholder="Enter your email" 
                 className="flex-grow py-4 px-8 rounded-l-full text-brand-purple border-0 placeholder-brand-purple/70 focus:outline-none"
                 required
               />
