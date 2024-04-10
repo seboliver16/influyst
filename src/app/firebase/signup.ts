@@ -41,7 +41,6 @@ async function signUp(
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
     const uid = user.uid;
-    await sendEmailVerification(user);
 
     // Set user document in Firestore
     await setDoc(doc(db, "users", uid), {

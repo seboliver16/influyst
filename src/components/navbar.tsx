@@ -25,10 +25,10 @@ export default function Navbar({ className }: { className?: string }) {
   <div className="flex flex-row space-x-10 items-center">
     { /* Displayed only on desktop screens */}
     
-<a href="/">
+<a href="/signin">
     <MenuItem setActive={setActive} active={active} item="Login" ></MenuItem></a>
     <button className="bg-brand-purple text-white px-5 py-2 rounded-full border-4 border-brand-purple-border hover:shadow-inner hover:bg-brand-purple-hover hover:border-brand-purple-hover-border transition ease-in-out shadow-sm ">
-      <Link href="/">Join</Link>
+      <Link href="/signup">Join</Link>
     </button>
   </div>
 </Menu>

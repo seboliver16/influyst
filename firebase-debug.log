@@ -1,0 +1,231 @@
+[debug] [2024-04-10T03:20:49.328Z] ----------------------------------------------------------------------
+[debug] [2024-04-10T03:20:49.329Z] Command:       /usr/local/bin/node /Users/seboliver/.npm-global/bin/firebase deploy --only hosting
+[debug] [2024-04-10T03:20:49.329Z] CLI Version:   13.7.1
+[debug] [2024-04-10T03:20:49.329Z] Platform:      darwin
+[debug] [2024-04-10T03:20:49.329Z] Node Version:  v21.7.1
+[debug] [2024-04-10T03:20:49.329Z] Time:          Tue Apr 09 2024 23:20:49 GMT-0400 (Eastern Daylight Time)
+[debug] [2024-04-10T03:20:49.329Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-04-10T03:20:49.358Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-04-10T03:20:49.358Z] > authorizing via signed-in user (influyst@gmail.com)
+[debug] [2024-04-10T03:20:49.359Z] [iam] checking project influyst-283ff for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-04-10T03:20:49.359Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/influyst-283ff:testIamPermissions [none]
+[debug] [2024-04-10T03:20:49.359Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/influyst-283ff:testIamPermissions x-goog-quota-user=projects/influyst-283ff
+[debug] [2024-04-10T03:20:49.359Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/influyst-283ff:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-04-10T03:20:49.526Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/influyst-283ff:testIamPermissions 200
+[debug] [2024-04-10T03:20:49.526Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/influyst-283ff:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-04-10T03:20:49.527Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/influyst-283ff [none]
+[debug] [2024-04-10T03:20:49.815Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/influyst-283ff 200
+[debug] [2024-04-10T03:20:49.815Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/influyst-283ff {"projectId":"influyst-283ff","projectNumber":"1020141181358","displayName":"Influyst","name":"projects/influyst-283ff","resources":{"hostingSite":"influyst-283ff","storageBucket":"influyst-283ff.appspot.com","locationId":"us-central"},"state":"ACTIVE","etag":"1_e1363c24-5ad2-447b-99f9-b672b4179dbb"}
+[debug] [2024-04-10T03:20:50.788Z] defaultcredentials: writing to file /Users/seboliver/.config/firebase/influyst_gmail_com_application_default_credentials.json
+[debug] [2024-04-10T03:20:50.790Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites pageToken=&pageSize=10
+[debug] [2024-04-10T03:20:51.378Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites 200
+[debug] [2024-04-10T03:20:51.378Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites {"sites":[{"name":"projects/influyst-283ff/sites/influyst-283ff","defaultUrl":"https://influyst-283ff.web.app","appId":"1:1020141181358:web:283caa425c516cf80b903f","type":"DEFAULT_SITE"},{"name":"projects/influyst-283ff/sites/influyst-creator","defaultUrl":"https://influyst-creator.web.app","appId":"1:1020141181358:web:538375614344acba0b903f","type":"USER_SITE"}]}
+[debug] [2024-04-10T03:20:51.379Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:1020141181358:web:283caa425c516cf80b903f/config [none]
+[debug] [2024-04-10T03:20:51.978Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:1020141181358:web:283caa425c516cf80b903f/config 200
+[debug] [2024-04-10T03:20:51.978Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:1020141181358:web:283caa425c516cf80b903f/config {"projectId":"influyst-283ff","appId":"1:1020141181358:web:283caa425c516cf80b903f","storageBucket":"influyst-283ff.appspot.com","locationId":"us-central","apiKey":"AIzaSyDdYTscIPOOUJqvDIq1KC3qIOnXlvMLb2g","authDomain":"influyst-283ff.firebaseapp.com","messagingSenderId":"1020141181358","measurementId":"G-XR7YVG3Y6V"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+   The integration is known to work with Next.js version 12 - 14.0. You may encounter errors.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2024-04-10T03:20:53.599Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites/influyst-283ff [none]
+[debug] [2024-04-10T03:20:53.709Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites/influyst-283ff 200
+[debug] [2024-04-10T03:20:53.709Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/influyst-283ff/sites/influyst-283ff {"name":"projects/influyst-283ff/sites/influyst-283ff","defaultUrl":"https://influyst-283ff.web.app","appId":"1:1020141181358:web:283caa425c516cf80b903f","type":"DEFAULT_SITE"}
+[info]    ▲ Next.js 14.1.4
+
+[info] 
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+./src/app/admin/page.tsx
+85:7  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/preview.tsx
+96:3  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+
+[info]    Collecting page data ...
+
+[info]    Generating static pages (0/10) ...
+
+[info] (node:10915) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[info]    Generating static pages (2/10) 
+
+[info] Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at l (/Users/seboliver/Downloads/website/influyst/.next/server/app/forgotpass/page.js:1:3576)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47422)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+    at nI (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:46809)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47573)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:61666)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+
+[info] (node:10921) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[info] (node:10916) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 23 (/Users/seboliver/Downloads/website/influyst/.next/server/app/signin/page.js:1:3937)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+[info] 
+Error occurred prerendering page "/forgotpass". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at l (/Users/seboliver/Downloads/website/influyst/.next/server/app/forgotpass/page.js:1:3576)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47422)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+    at nI (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:46809)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47573)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:61666)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+
+[info] (node:10919) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 6582 (/Users/seboliver/Downloads/website/influyst/.next/server/app/signup/page.js:1:4031)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+[info] (node:10917) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 1426 (/Users/seboliver/Downloads/website/influyst/.next/server/app/page.js:1:129103)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+[info]    Generating static pages (4/10) 
+
+[info] (node:10920) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[info] 
+Error occurred prerendering page "/signup". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 6582 (/Users/seboliver/Downloads/website/influyst/.next/server/app/signup/page.js:1:4031)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+Error occurred prerendering page "/signin". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 23 (/Users/seboliver/Downloads/website/influyst/.next/server/app/signin/page.js:1:3937)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+[info] 
+Error occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at 1426 (/Users/seboliver/Downloads/website/influyst/.next/server/app/page.js:1:129103)
+    at t (/Users/seboliver/Downloads/website/influyst/.next/server/webpack-runtime.js:1:143)
+    at F (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94669)
+    at /Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97084
+    at W._fromJSON (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:97522)
+    at JSON.parse (<anonymous>)
+    at L (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94390)
+
+[info] Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at oZ (/Users/seboliver/Downloads/website/influyst/.next/server/app/admin/page.js:322:63901)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47422)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+    at nI (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:46809)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47573)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:61666)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+
+Error occurred prerendering page "/admin". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Component auth has not been registered yet
+    at w.initialize (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/95.js:76:2099)
+    at /Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:409
+    at a6 (/Users/seboliver/Downloads/website/influyst/.next/server/chunks/364.js:951:433)
+    at oZ (/Users/seboliver/Downloads/website/influyst/.next/server/app/admin/page.js:322:63901)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47422)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+    at nI (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:46809)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:47573)
+    at nM (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:61666)
+    at nL (/Users/seboliver/Downloads/website/influyst/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:64677)
+
+[info]    Generating static pages (7/10) 
+
+[info]  ✓ Generating static pages (10/10) 
+
+[info] 
+
+[info] > Export encountered errors on following paths:
+	/admin/page: /admin
+	/forgotpass/page: /forgotpass
+	/page: /
+	/signin/page: /signin
+	/signup/page: /signup
+
+[debug] [2024-04-10T03:21:04.765Z] Error: ENOENT: no such file or directory, open '/Users/seboliver/Downloads/website/influyst/.next/export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.

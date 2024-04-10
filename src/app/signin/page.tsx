@@ -26,23 +26,25 @@ const Page = () => {
     } else if (result?.user.emailVerified == false) {
     } else {
       console.log(result);
-      router.push('/app/main');
+      router.push('/admin');
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       {/* Left Half: Sign-up Form */}
+      <a href='/'>
       <div className="absolute top-0 left-0 p-8 ">
         <div className="flex items-center">
           <Image src='/logo.svg' height={25} width={25} alt="Logo" />
           <h1 className="text-xl font-bold text-gray-800 ml-3">Influyst</h1>
         </div>
       </div>
+      </a>
       <div className="w-full md:w-1/2 p-8">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md">
           <div className="p-8">
-            <h2 className="text-3xl font-bold mb-4">Welcome Back</h2>
+            <h2 className="text-3xl font-bold mb-4 text-center">Welcome Back</h2>
             <form onSubmit={handleForm} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium">
