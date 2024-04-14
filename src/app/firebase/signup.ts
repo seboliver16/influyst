@@ -49,6 +49,8 @@ async function signUp(
       isSubscribed: false,
       email: email,
       dateJoined: serverTimestamp(),
+      industries: [],
+      bio: "",
       profilePicture: "",
       
     });
