@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { useIsMobile } from '../app/isMobile';
 
 const transition = {
   type: "spring",
@@ -24,24 +25,30 @@ export const MenuItem = ({
   item: string;
   children?: React.ReactNode;
 }) => {
+  const isMobile = useIsMobile(); // Using the custom hook to determine if it's a mobile device
+
+  // Conditionally applying motion components based on the isMobile flag
+  const TextComponent = isMobile ? "p" : motion.p;
+  const DivComponent = isMobile ? "div" : motion.div;
+
   return (
-    <div onMouseEnter={() => setActive(item)} className="relative ">
-      <motion.p
-        transition={{ duration: 0.3 }}
+    <div onMouseEnter={() => setActive(item)} className="relative">
+      <TextComponent
+        transition={!isMobile ? { duration: 0.3 } : {}}
         className="cursor-pointer hover:text-gray-900 text-gray-500 transition ease-in-out hover:opacity-[0.9] dark:text-white"
       >
         {item}
-      </motion.p>
+      </TextComponent>
       {active !== null && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={transition}
+        <DivComponent
+          initial={!isMobile ? { opacity: 0, scale: 0.85, y: 10 } : {}}
+          animate={!isMobile ? { opacity: 1, scale: 1, y: 0 } : {}}
+          transition={!isMobile ? transition : {}}
         >
           {active === item && (
             <div className="absolute top-[calc(100%_+_1.7rem)] left-1/2 transform -translate-x-1/2"></div>
           )}
-        </motion.div>
+        </DivComponent>
       )}
     </div>
   );

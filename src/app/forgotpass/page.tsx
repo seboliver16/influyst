@@ -31,14 +31,11 @@ function Page() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(254, 248, 237, 1) 0%, rgba(255, 235, 210, 1) 100%)",
-      }}
+      className="min-h-screen flex items-center justify-center bg-gray-100"
+      
     >
       <div
-        className="max-w-md w-full space-y-8 p-8 md:p-14 bg-white rounded-xl shadow-lg z-10 m-4 border-8 border-orange-500"
+        className="max-w-md w-full space-y-8 p-8 md:p-14 bg-white rounded-xl shadow-md z-10 m-4 "
         style={{ borderColor: "rgba(255, 165, 0, 0.2)" }}
       >
         <h2 className="text-2xl font-bold text-gray-900">Reset Password</h2>
@@ -60,16 +57,15 @@ function Page() {
             />
           </div>
           {error && <p className={errorStyle}>{error}</p>}
-          {message && <p className="text-green-500 text-xs mt-1">{message}</p>}
-          <button type="submit" className={buttonStyle}>
+          {message && <p className="text-indigo-500 text-xs mt-1">{message}</p>}
+          <button type="submit" className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-800">
             Reset Password
           </button>
         </form>
         <div className="flex flex-col items-start space-y-2">
           <a
-            href="#"
-            onClick={() => router.push("/signin")}
-            className="font-medium text-sprout-green hover:text-lime-600"
+            href="/signin"
+            className="font-medium text-indigo-600 hover:text-indigo-600"
           >
             Back to Log In
           </a>
