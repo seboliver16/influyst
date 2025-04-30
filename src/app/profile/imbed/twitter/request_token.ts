@@ -15,7 +15,8 @@ export default async (_req: NextApiRequest, res: NextApiResponse) => {
   const oauthNonce = crypto.randomBytes(16).toString('base64');
   const oauthTimestamp = Math.floor(Date.now() / 1000).toString();
 
-  const parameters = {
+  // Cast parameters to Record<string, string> to match the expected type
+  const parameters: Record<string, string> = {
     oauth_callback: callbackURL,
     oauth_consumer_key: oauthConsumerKey,
     oauth_nonce: oauthNonce,
