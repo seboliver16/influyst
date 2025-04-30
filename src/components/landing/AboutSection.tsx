@@ -28,7 +28,7 @@ const AboutSection = () => {
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-semibold mb-6 tracking-tight">About Influyst</h2>
           <p className="text-lg text-gray-600 font-light leading-relaxed">
-            We're on a mission to help creators maximize their value and streamline the brand partnership process. Our platform provides the tools you need to showcase your work professionally.
+            We&apos;re on a mission to help creators maximize their value and streamline the brand partnership process. Our platform provides the tools you need to showcase your work professionally.
           </p>
         </div>
 
