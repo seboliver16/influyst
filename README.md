@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Influyst
+
+Influyst is a platform that helps creators showcase their social media stats and streamline brand partnerships through personalized media kits.
+
+![Influyst Screenshot](public/screenshot.png)
+
+## Features
+
+- **Custom Profile URLs**: Claim your unique Influyst URL to share with brands
+- **Social Platform Integration**: Connect all your social accounts in one place
+- **Real-time Stats**: Automatically sync and display your engagement metrics
+- **Customizable Media Kit**: Personalize your professional presence
+- **Brand Partnership Tools**: Streamline collaboration opportunities
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS, Framer Motion
+- **Styling**: Tailwind CSS with custom animations and responsive design
+- **State Management**: React Hooks
+- **Routing**: Next.js App Router
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+   ```
+   git clone https://github.com/seboliver/influyst.git
+   ```
+
+2. Install dependencies
+   ```
+   cd influyst
+   npm install
+   # or
+   yarn
+   ```
+
+3. Run the development server
+   ```
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Project Structure
+
+```
+influyst/
+├── app/             # Next.js app directory
+├── components/      # React components
+├── public/          # Static assets
+├── styles/          # Global styles
+└── src/             # Source code
+    ├── components/  # Reusable components
+    │   └── landing/ # Landing page components 
+    └── lib/         # Utility functions and shared logic
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The application can be deployed on platforms like Vercel or Netlify.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Build for Production
 
-## Learn More
+```
+npm run build
+# or
+yarn build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Legal Notice
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This repository contains proprietary and confidential information. All rights reserved.
+Unauthorized copying, distribution, modification, public display, or public performance of this
+proprietary work is strictly prohibited.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Contact
 
-## Deploy on Vercel
+Seb Oliver
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Project Link: [https://github.com/seboliver/influyst](https://github.com/seboliver/influyst)
