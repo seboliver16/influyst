@@ -2,43 +2,53 @@ import React, { useState } from 'react';
 import firebase_app from '../../firebase/config'; // Ensure this path is correct
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { User, getAuth } from 'firebase/auth';
+
 interface IndustriesProps {
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  initialTags: string[];
+  onTagsChange: (tags: string[]) => void;
 }
-const Industries: React.FC<IndustriesProps> = ({ setStep }) => {
-  const [tags, setTags] = useState<string[]>([]);
+
+const Industries: React.FC<IndustriesProps> = ({ setStep, initialTags, onTagsChange }) => {
+  const [tags, setTags] = useState<string[]>(initialTags);
   const [input, setInput] = useState('');
-  const auth = getAuth();
-  const db = getFirestore();
+  const auth = getAuth(firebase_app);
+  const db = getFirestore(firebase_app);
   const currentUser = auth.currentUser;
+
   const handleAddTag = () => {
     if (input.trim() !== '' && tags.length < 3 && !tags.includes(input.trim()) && input.trim().length <= 20) {
-      setTags([...tags, input.trim()]);
+      const newTags = [...tags, input.trim()];
+      setTags(newTags);
       setInput('');
+      onTagsChange(newTags);
     }
   };
 
   const handleDeleteTag = (index: number) => {
-    setTags(tags.filter((_, i) => i !== index));
+    const newTags = tags.filter((_, i) => i !== index);
+    setTags(newTags);
+    onTagsChange(newTags);
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleAddTag();
       event.preventDefault();
+      handleAddTag();
     }
   };
 
   const updateIndustriesInFirebase = async () => {
-    var user = currentUser as User;
-    const userDocRef = doc(db, 'users', user.uid);
-    try {
-      await updateDoc(userDocRef, {
-        industries: tags
-      });
-      setStep(3);
-    } catch (error) {
-      console.error("Error updating document: ", error);
+    if (currentUser) {
+      const userDocRef = doc(db, 'users', currentUser.uid);
+      try {
+        await updateDoc(userDocRef, {
+          industries: tags
+        });
+        setStep(3);
+      } catch (error) {
+        console.error("Error updating document: ", error);
+      }
     }
   };
 
@@ -59,7 +69,7 @@ const Industries: React.FC<IndustriesProps> = ({ setStep }) => {
           onClick={handleAddTag}
           disabled={!input || tags.length >= 3}
         >
-           add
+          Add
         </button>
       </div>
 
@@ -67,7 +77,7 @@ const Industries: React.FC<IndustriesProps> = ({ setStep }) => {
         {tags.map((tag, index) => (
           <div key={index} className="bg-blue-100 border rounded px-4 py-1 flex items-center">
             {tag}
-            <button onClick={() => handleDeleteTag(index)} className="ml-2  hover:bg-grey-600 rounded-full p-1 text-white">
+            <button onClick={() => handleDeleteTag(index)} className="ml-2 hover:bg-grey-600 rounded-full p-1 text-white">
               x
             </button>
           </div>
@@ -76,7 +86,7 @@ const Industries: React.FC<IndustriesProps> = ({ setStep }) => {
 
       {tags.length > 0 && (
         <button
-          className="w-full bg-indigo-600 hover:bg-ingifo-600 text-white py-2 px-4 rounded"
+          className="w-full bg-indigo-600 hover:bg-indigo-600 text-white py-2 px-4 rounded"
           onClick={updateIndustriesInFirebase}
         >
           Continue

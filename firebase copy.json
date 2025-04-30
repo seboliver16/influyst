@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "source": ".",
+    "site": "influyst-creator",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+    
+  }
+}

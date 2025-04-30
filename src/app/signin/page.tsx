@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+
 import signIn from "../firebase/signin";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,18 +18,30 @@ const Page = () => {
   const router = useRouter();
 
   const handleForm = async (event: { preventDefault: () => void; }) => {
+    console.log("Form submission started");
     event.preventDefault();
 
-    const { result, error } = await signIn(email, password);
+    try {
+        const { result, error } = await signIn(email, password);
+        console.log("signIn response:", { result, error });
+        console.log(result?.user.email)
 
-    if (error) {
-      setError('Error: Check Details or Verify Email');
-    } else if (result?.user.emailVerified == false) {
-    } else {
-      console.log(result);
-      router.push('/admin');
+        if (error) {
+            console.error("Sign-in error:", error);
+            setError('Error: Check Details or Verify Email');
+        } else if (result?.user.email?.length == 0) {
+            console.warn("Email not verified");
+            // Handle email not verified case
+        } else {
+            console.log("Sign-in successful:", result);
+            router.push('/admin');
+        }
+    } catch (ex) {
+        console.error("Exception during sign-in:", ex);
+        setError('An unexpected error occurred. Please try again.');
     }
-  };
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -79,6 +92,7 @@ const Page = () => {
               {error && <p className={errorStyle}>{error}</p>}
               <div>
                 <button
+                onSubmit={handleForm}
                   type="submit"
                   className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-800"
                 >

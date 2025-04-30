@@ -52,7 +52,8 @@ async function signUp(
       industries: [],
       bio: "",
       profilePicture: "",
-      
+      partners:[],
+      contentExamples:[],
     });
 
 

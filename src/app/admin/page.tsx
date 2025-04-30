@@ -5,11 +5,11 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import firebase_app from '../firebase/config';
 import UploadHeadshot from './uploadImg/uploadImage';
-import { User } from '../user';
-import Image from "next/image";
 import Industries from './industries/industries';
 import Bio from './bio/bio';
 import Socials from './socials/socials';
+import { User } from '../user';
+import Image from "next/image";
 
 const UserProfile = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -26,15 +26,10 @@ const UserProfile = () => {
 
         if (userDocSnapshot.exists()) {
           setUser(userDocSnapshot.data() as User);
-          if (userDocSnapshot.data()['profilePicture']) {
-            setCurrentStep(2);
-            if (userDocSnapshot.data()['industries']) {
-              setCurrentStep(3);
-              if (userDocSnapshot.data()['bio']) {
-                setCurrentStep(4);
-              }
-            }
-          }
+          const userData = userDocSnapshot.data();
+          setCurrentStep(userData.profilePicture ? 2 : 1);
+          if (userData.industries.length > 0) setCurrentStep(3);
+          if (userData.bio.length > 0) setCurrentStep(4);
         } else {
           console.error('User document does not exist');
         }
@@ -48,11 +43,7 @@ const UserProfile = () => {
 
   const stepClasses = (step: number) => {
     let baseClasses = "rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 flex justify-center items-center";
-    if (currentStep >= step) {
-      return `${baseClasses} bg-indigo-400 border-indigo-400`;
-    } else {
-      return `${baseClasses} bg-white border-gray-300`;
-    }
+    return `${baseClasses} ${currentStep >= step ? 'bg-indigo-400 border-indigo-400' : 'bg-white border-gray-300'}`;
   };
 
   return (
@@ -62,8 +53,8 @@ const UserProfile = () => {
           <Image src='/logo.svg' height={25} width={25} alt="Logo" />
           <span className="text-xl font-bold">Influyst</span>
         </div>
-        <div className="bg-indigo-400 text-white rounded-full w-10 h-10 flex justify-center items-center text-lg font-semibold">
-          {user?.username.substring(0, 2).toUpperCase()}
+        <div className="bg-indigo-400 text-white rounded-full w-10 h-10 flex justify-center items-center">
+          {user?.username?.substring(0, 2).toUpperCase()}
         </div>
       </header>
 
@@ -87,37 +78,34 @@ const UserProfile = () => {
             </svg>
           </div>
         </div>
-        
-        {/* Conditional rendering based on currentStep */}
+
         {currentStep === 1 && (
           <>
-          <h1 className="text-3xl font-bold text-center text-black my-4">Upload Profile Pic</h1>
-
-          <UploadHeadshot setProfilePictureUploaded={() => {
-
-            setProfilePictureUploaded(true);
-            setCurrentStep(2);
-          }} />
+            <h1 className="text-3xl font-bold text-center text-black my-4">Upload Profile Pic</h1>
+            <UploadHeadshot setProfilePictureUploaded={() => {
+              setProfilePictureUploaded(true);
+              setCurrentStep(2);
+            }} />
           </>
         )}
         {currentStep === 2 && user && (
           <>
-    <h1 className="text-3xl font-bold text-center text-black my-4">Add Industries</h1>
-
-    <Industries setStep={() => setCurrentStep(3)} />
-  </>
+            <h1 className="text-3xl font-bold text-center text-black my-4">Add Industries</h1>
+            <Industries setStep={() => setCurrentStep(3)} initialTags={[]} onTagsChange={function (tags: string[]): void {
+              throw new Error('Function not implemented.');
+            } } />
+          </>
         )}
         {currentStep === 3 && user && (
           <>
-    <h1 className="text-3xl font-bold text-center text-black my-4">Add Bio</h1>
-
-          <Bio setStep={() => setCurrentStep(4)} />
+            <h1 className="text-3xl font-bold text-center text-black my-4">Add Bio</h1>
+            <Bio setStep={() => setCurrentStep(4)} />
           </>
         )}
         {currentStep === 4 && user && (
           <>
             <h1 className="text-3xl font-bold text-center my-4">Add Socials</h1>
-            <Socials onAddSocial={(platformName) => console.log(`Adding ${platformName}`)} onSkip={() => console.log('Skipped adding socials')} />
+            <Socials onContinue={() => console.log('continuing adding socials')} onAddSocial={(platformName) => console.log(`Adding ${platformName}`)} onSkip={() => console.log('Skipped adding socials')} />
           </>
         )}
       </main>
