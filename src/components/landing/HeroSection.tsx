@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Instagram, Youtube, CheckCircle, Sparkles } from 'lucide-react';
 import { useTheme } from '../../app/context/themeContext';
+import Link from 'next/link';
 
 // Custom TikTok icon 
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -306,6 +307,13 @@ export const HeroSection = () => {
                     </div>
                   </button>
                 </form>
+              </div>
+              
+              {/* Login link */}
+              <div className="mt-4 text-center">
+                <Link href="/signin" className="inline-flex items-center text-sm sm:text-base text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                  Already have an account? <span className="ml-1 font-medium">Sign In</span>
+                </Link>
               </div>
             </div>
           </div>
