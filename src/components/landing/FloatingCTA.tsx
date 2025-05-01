@@ -45,39 +45,38 @@ export const FloatingCTA = () => {
           <div 
             className={`
               max-w-sm sm:max-w-md w-full
-              ${isInputFocused ? 'ring-2 sm:ring-4 ring-purple-100' : 'hover:ring-2 hover:ring-gray-200/70'} 
-              bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl border border-gray-200 
+              ${isInputFocused ? 'ring-2 sm:ring-4 ring-purple-100 dark:ring-purple-900/30' : 'hover:ring-2 hover:ring-gray-200/70 dark:hover:ring-gray-700/70'} 
+              bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl 
+              border border-gray-200 dark:border-gray-700
               transition-all duration-200
             `}
           >
             <form onSubmit={handleSubmit} className="flex items-center w-full">
-              <div className="flex flex-1 items-center pl-3 sm:pl-5 pr-1.5 sm:pr-2 py-2.5 sm:py-3.5">
-                <span className="text-purple-600 font-medium text-xs sm:text-sm whitespace-nowrap">influyst.com/</span>
+              <div className="flex flex-1 items-center pl-3 sm:pl-5 pr-1.5 sm:pr-2 py-2.5 sm:py-3.5 max-w-[60%] sm:max-w-[70%]">
+                <span className="text-purple-600 dark:text-purple-400 font-medium text-xs sm:text-sm whitespace-nowrap">influyst.com/</span>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   onFocus={() => setIsInputFocused(true)}
                   onBlur={() => setIsInputFocused(false)}
-                  placeholder="yourname"
+                  placeholder="username"
                   aria-label="Enter your preferred username"
                   required
-                  className="flex-1 pl-1 py-1.5 text-gray-800 focus:outline-none bg-transparent text-xs sm:text-sm placeholder:text-gray-400"
+                  className="w-full pl-1 py-1.5 text-gray-800 dark:text-white focus:outline-none bg-transparent text-xs sm:text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 />
               </div>
-              <div className="pr-1.5 sm:p-1.5">
-                <button 
-                  type="submit"
-                  className="relative group bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm whitespace-nowrap"
-                >
-                  <span className="relative z-10">Claim Username</span>
-                  {/* Animation on hover */}
-                  <div className="absolute inset-0 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-white opacity-20 blur-lg rounded-lg sm:rounded-xl"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg sm:rounded-xl"></div>
-                  </div>
-                </button>
-              </div>
+              <button 
+                type="submit"
+                className="relative group bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-300 text-xs sm:text-sm whitespace-nowrap ml-auto mr-1.5 sm:mr-2"
+              >
+                <span className="relative z-10">Claim Username</span>
+                {/* Animation on hover */}
+                <div className="absolute inset-0 rounded-lg sm:rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-white dark:bg-gray-200 opacity-20 blur-lg rounded-lg sm:rounded-xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg sm:rounded-xl"></div>
+                </div>
+              </button>
             </form>
           </div>
         </motion.div>

@@ -33,6 +33,11 @@
     --ring: 224 71.4% 4.1%;
 
     --radius: 0.5rem;
+    
+    /* Cursor colors */
+    --cursor-color: 271 95% 65%;
+    --cursor-color-light: 271 81% 56%;
+    --cursor-color-glow: 271 90% 65% / 0.4;
   }
 
   .dark {
@@ -63,6 +68,11 @@
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
+    
+    /* Cursor colors in dark mode */
+    --cursor-color: 271 81% 82%;
+    --cursor-color-light: 271 75% 70%;
+    --cursor-color-glow: 271 73% 75% / 0.4;
   }
 }
 
@@ -74,11 +84,111 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Ensure all inputs have visible cursors */
+  input, textarea {
+    caret-color: rgb(147, 51, 234) !important; /* Purple-600 */
+    caret-shape: block !important;
+    cursor: text !important;
+  }
+  
+  .dark input, .dark textarea {
+    caret-color: rgb(192, 132, 252) !important; /* Purple-400 */
+    caret-shape: block !important;
+    cursor: text !important;
+  }
+  
+  /* Force cursor visibility */
+  input::selection, textarea::selection {
+    background-color: rgba(147, 51, 234, 0.2) !important;
+  }
+  
+  .dark input::selection, .dark textarea::selection {
+    background-color: rgba(192, 132, 252, 0.2) !important;
+  }
+  
+  /* Ensure focus states are visible */
+  input:focus, textarea:focus {
+    outline: none !important;
+    caret-color: rgb(147, 51, 234) !important;
+  }
+  
+  .dark input:focus, .dark textarea:focus {
+    outline: none !important;
+    caret-color: rgb(192, 132, 252) !important;
+  }
+
+  /* Custom cursor optimizations */
+  a, button, [role="button"], label[for], .cursor-pointer {
+    cursor: pointer !important;
+  }
+  
+  /* Ensure UI elements are always under the cursor */
+  .fixed.top-4.right-4 {
+    z-index: 9000 !important;
+  }
+
+  /* Custom cursor class for html element */
+  html.custom-cursor-active {
+    cursor: none !important;
+  }
+  
+  html.custom-cursor-active * {
+    cursor: none !important;
+  }
+  
+  html.custom-cursor-active a, 
+  html.custom-cursor-active button, 
+  html.custom-cursor-active [role="button"], 
+  html.custom-cursor-active label[for], 
+  html.custom-cursor-active .cursor-pointer {
+    cursor: none !important;
+  }
+  
+  html.custom-cursor-active input, 
+  html.custom-cursor-active textarea, 
+  html.custom-cursor-active [contenteditable="true"] {
+    cursor: text !important;
+  }
+
+  /* Hardware acceleration for custom cursors */
+  .fixed.pointer-events-none {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    perspective: 1000;
+    z-index: 9999 !important; /* Always ensure cursor is on top */
+  }
+  
+  /* Extra styles to ensure cursor is always visible */
+  html.custom-cursor-active [style*="z-index: 9999"] {
+    z-index: 9999 !important;
+  }
+  
+  /* High contrast mode support */
+  @media (forced-colors: active) {
+    .fixed.pointer-events-none {
+      forced-color-adjust: none;
+    }
+  }
 }
 
 @layer utilities {
   .tight-lines {
     @apply leading-tight tracking-tighter;
+  }
+  
+  /* Z-index utilities for proper layering */
+  .z-cursor {
+    z-index: 9999 !important;
+  }
+  
+  .z-cursor-trail {
+    z-index: 9998 !important;
+  }
+  
+  .z-ui {
+    z-index: 9000 !important;
   }
 }
 
@@ -86,4 +196,32 @@ html,
 body {
   overscroll-behavior: none;
   touch-action: pan-x pan-y;
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  100% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Cursor visibility fix */
+@supports (-moz-appearance:none) {
+  body:not(.cursor-default) {
+    cursor: none !important;
+  }
+}
+
+/* Dark mode banner fix - direct style instead of @apply to avoid circular dependency */
+.bg-gray-50.dark\:bg-gray-900 {
+  background-color: rgb(249 250 251);
+}
+
+.dark .bg-gray-50.dark\:bg-gray-900 {
+  background-color: rgb(17 24 39);
 }

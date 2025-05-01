@@ -13,7 +13,7 @@ import AboutSection from '../components/landing/AboutSection';
 
 export default function LandingPage() {
   return (
-    <main className="relative flex flex-col min-h-screen bg-white">
+    <main className="relative flex flex-col min-h-screen bg-white dark:bg-gray-900">
       {/* <Navbar /> */}
       <Navbar />
       
@@ -22,7 +22,7 @@ export default function LandingPage() {
         <HeroSection />
 
         {/* Feature Sections */}
-        <div id="features" className="bg-white">
+        <div id="features" className="bg-white dark:bg-gray-900">
           <FeatureHighlightSection
             title="One Link, All Your Stats"
             description="Connect your social platforms and watch your key metrics update automatically. Share just one link with brands instead of lengthy media kits and spreadsheets."
@@ -68,6 +68,18 @@ export default function LandingPage() {
         
         <div className="relative w-full">
           <FinalCTASection />
+        </div>
+
+        {/* Influyst Logo Banner */}
+        <div className="relative w-full h-72 bg-gray-50 dark:bg-gray-900 overflow-hidden">
+          <div className="absolute inset-0 w-full h-full bg-gray-50 dark:bg-gray-900"></div>
+          <h1 className="absolute top-[65px] left-0 right-0 text-center text-[19rem] font-extrabold text-transparent tracking-tighter leading-none w-full"
+              style={{
+                WebkitTextStroke: '2px #8a5cf6',
+                textShadow: '0 0 20px rgba(138, 92, 246, 0.2)'
+              }}>
+            INFLUYST
+          </h1>
         </div>
 
         <div className="relative w-full">

@@ -36,13 +36,13 @@ export const FinalCTASection = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-xl overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-5">
               {/* Content area */}
               <div className="p-6 sm:p-8 md:p-12 lg:col-span-3">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text leading-tight">Ready to elevate your creator brand?</h2>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400 text-transparent bg-clip-text leading-tight">Ready to elevate your creator brand?</h2>
                 
-                <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8">
+                <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8">
                   Join thousands of creators using Influyst to streamline their brand partnerships and maximize their earning potential.
                 </p>
                 
@@ -50,8 +50,8 @@ export const FinalCTASection = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-2 sm:gap-y-4">
                     {features.map((feature, index) => (
                       <div key={index} className="flex items-center">
-                        <Check className="text-green-500 mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                        <span className="text-sm sm:text-base text-gray-700">{feature}</span>
+                        <Check className="text-green-500 dark:text-green-400 mr-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                        <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -59,28 +59,32 @@ export const FinalCTASection = () => {
                 
                 <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <div className={`
-                    flex flex-1 items-center bg-gray-50 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3
-                    ${isInputFocused ? 'ring-2 ring-purple-100' : ''}
-                    border border-gray-100 transition-all duration-200
+                    flex flex-1 items-center bg-gray-50 dark:bg-gray-700 rounded-lg 
+                    ${isInputFocused ? 'ring-2 ring-purple-100 dark:ring-purple-900/30' : ''}
+                    border border-gray-100 dark:border-gray-600 transition-all duration-200
+                    overflow-hidden
                   `}>
-                    <span className="text-purple-600 font-medium text-sm sm:text-base whitespace-nowrap">influyst.com/</span>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      onFocus={() => setIsInputFocused(true)}
-                      onBlur={() => setIsInputFocused(false)}
-                      placeholder="yourname"
-                      className="flex-1 ml-1 p-1 text-sm sm:text-base text-gray-800 bg-transparent focus:outline-none"
-                      required
-                    />
+                    <div className="flex flex-1 items-center pl-3 sm:pl-5 pr-2 py-2 sm:py-3">
+                      <span className="text-purple-600 dark:text-purple-400 font-medium text-sm sm:text-base whitespace-nowrap">influyst.com/</span>
+                      <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        onFocus={() => setIsInputFocused(true)}
+                        onBlur={() => setIsInputFocused(false)}
+                        placeholder="username"
+                        style={{ caretColor: 'rgb(147, 51, 234)' }}
+                        className="flex-1 ml-1 p-1 text-sm sm:text-base text-gray-800 dark:text-white bg-transparent focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 caret-purple-600 dark:caret-purple-400"
+                        required
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      className="h-full m-0 px-4 sm:px-6 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium text-sm sm:text-base transition-all duration-300"
+                    >
+                      Claim
+                    </button>
                   </div>
-                  <button 
-                    type="submit"
-                    className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium text-sm sm:text-base py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
-                  >
-                    Claim Username
-                  </button>
                 </form>
               </div>
               

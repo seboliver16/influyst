@@ -434,7 +434,12 @@ const handleAddSocial = (social: string) => {
                       Upload Profile Picture
                     </h3>
                     <div className="mt-3">
-                      <input type="file" accept="image/*" onChange={onFileChange} className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-50 file:text-indigo-700 hover:file:bg-gray-100"/>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={onFileChange} 
+                        className="block w-full text-sm text-gray-700 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-50 dark:file:bg-gray-700 file:text-indigo-700 dark:file:text-indigo-400 h-full caret-purple-600 dark:caret-purple-400" 
+                      />
                     </div>
                     <label htmlFor="file-input" className="w-36 h-36 bg-white-400 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer">
         {imageSrc ? (

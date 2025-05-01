@@ -149,7 +149,12 @@ const Dashboard: React.FC = () => {
           <div className="bg-white p-4 rounded-lg shadow-sm col-span-2">
             <h2 className="text-lg font-semibold">Share your link</h2>
             <div className="mt-3 flex">
-              <input type="text" readOnly className="border border-gray-300 p-2 rounded w-full" value={profileUrl} />
+              <input 
+                type="text" 
+                readOnly 
+                className="border border-gray-300 dark:border-gray-600 p-2 rounded w-full text-gray-800 dark:text-white bg-white dark:bg-gray-800 caret-purple-600 dark:caret-purple-400" 
+                value={profileUrl} 
+              />
               <button className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 ml-2" onClick={handleCopyProfileUrl}>Copy</button>
             </div>
             {copied && <p className="text-green-500 mt-2">URL copied to clipboard!</p>}
