@@ -6,8 +6,11 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Influyst",
-  description: "Your Social Resume.",
+  title: 'Influyst - Creator Media Kit Platform',
+  description: 'Create beautiful live media kits to showcase your social media presence',
+  icons: {
+    icon: '/logo.svg',
+  },
 };
 
 export default function RootLayout({

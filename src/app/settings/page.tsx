@@ -75,21 +75,6 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src="/logo.svg" alt="Influyst Logo" className="h-8 w-auto" />
-            <span className="font-bold ml-2 text-xl">Influyst</span>
-          </div>
-          <nav>
-            <a href="/dashboard" className="text-gray-800 hover:underline px-4">
-              Dashboard
-            </a>
-            <a href="/signin" className="text-gray-800 hover:underline" onClick={handleLogout}>Logout</a>
-          </nav>
-         
-        </div>
-      </header>
 
       <main className="container mx-auto p-4">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">Settings</h1>

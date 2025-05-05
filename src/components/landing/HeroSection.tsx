@@ -311,8 +311,8 @@ export const HeroSection = () => {
               
               {/* Login link */}
               <div className="mt-4 text-center">
-                <Link href="/signin" className="inline-flex items-center text-sm sm:text-base text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
-                  Already have an account? <span className="ml-1 font-medium">Sign In</span>
+                <Link href="/login" className="inline-flex items-center text-sm sm:text-base text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                  Already have an account? <span className="ml-1 font-medium">Log In</span>
                 </Link>
               </div>
             </div>

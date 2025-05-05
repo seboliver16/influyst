@@ -3,13 +3,19 @@
 import React, { useState, Suspense } from "react";
 import { useRouter } from 'next/navigation';
 import { motion } from "framer-motion";
-import signIn from "../firebase/signin";
+import logIn from "../firebase/login";
 import Link from "next/link";
 import Image from "next/image";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { useTheme } from "../context/themeContext";
 
-function SigninForm() {
+// Import shadcn components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,9 +27,10 @@ function SigninForm() {
   const handleForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      const { result, error } = await signIn(email, password);
+      const { result, error } = await logIn(email, password);
 
       if (error) {
         setError('Error: Check Details or Verify Email');
@@ -116,26 +123,33 @@ function SigninForm() {
                 </p>
               </div>
 
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
               <form onSubmit={handleForm} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Email
-                  </label>
-                  <div className={`
-                    relative 
-                    ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
-                    bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden
-                    transition-all duration-300
-                  `}>
-                    <input
+                  </Label>
+                  <div className="mt-1.5">
+                    <Input
                       id="email"
-                      name="email"
                       type="email"
                       required
-                      className="w-full p-3 text-gray-800 dark:text-white focus:outline-none bg-transparent"
                       placeholder="youremail@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      className={`
+                        w-full p-3 rounded-xl 
+                        ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
+                        bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                        text-gray-800 dark:text-white placeholder:text-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                        transition-all duration-300
+                      `}
                       onFocus={() => setIsInputFocused(true)}
                       onBlur={() => setIsInputFocused(false)}
                     />
@@ -143,79 +157,72 @@ function SigninForm() {
                 </div>
                 
                 <div>
-                  <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Password
-                  </label>
-                  <div className={`
-                    relative
-                    ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
-                    bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden
-                    transition-all duration-300
-                  `}>
-                    <input
+                  <div className="flex justify-between items-center mb-2">
+                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Password
+                    </Label>
+                    <Link href="/forgotpass" className="text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <div className="mt-1.5">
+                    <Input
                       id="password"
-                      name="password"
                       type="password"
                       required
-                      className="w-full p-3 text-gray-800 dark:text-white focus:outline-none bg-transparent"
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      className={`
+                        w-full p-3 rounded-xl 
+                        ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
+                        bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                        text-gray-800 dark:text-white placeholder:text-gray-400
+                        focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                        transition-all duration-300
+                      `}
                       onFocus={() => setIsInputFocused(true)}
                       onBlur={() => setIsInputFocused(false)}
                     />
                   </div>
                 </div>
                 
-                <button
+                <Button
                   type="submit"
-                  className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden"
                   disabled={loading}
+                  className="w-full py-6 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 
+                  text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden h-auto"
                 >
-                  <span className="relative z-10">Sign In</span>
+                  {loading ? (
+                    <span className="flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </span>
+                  ) : (
+                    <span className="relative z-10">Sign In</span>
+                  )}
                   <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500">
                     <div className="absolute inset-0 bg-white opacity-20 blur-lg"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500"></div>
                   </div>
-                </button>
+                </Button>
 
-                <div className="flex flex-col items-center space-y-2 text-sm pt-2">
-                  <Link href="/forgotpass" className="font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
-                    Forgot your password?
-                  </Link>
-                  <div>
-                    Don&apos;t have an account?
-                    <Link href="/signup" className="font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors ml-1">
-                      Sign Up
-                    </Link>
-                  </div>
+                <div className="text-center text-gray-500 dark:text-gray-400 mt-4">
+                  Don&apos;t have an account? <Link href="/signup" className="text-purple-600 dark:text-purple-400 font-medium hover:underline">Sign up</Link>
                 </div>
-                
-                {error && (
-                  <p className="text-red-500 text-sm mt-2 text-center">{error}</p>
-                )}
               </form>
             </div>
           </motion.div>
         </div>
       </div>
-      
-      <style jsx global>{`
-        @keyframes gradient-shift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-      `}</style>
     </div>
   );
 }
 
-// Page component wrapped with Suspense
 export default function Page() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>}>
-      <SigninForm />
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
     </Suspense>
   );
 }

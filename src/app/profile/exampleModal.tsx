@@ -14,16 +14,22 @@ const socialPlatforms = ['Instagram', 'YouTube', 'Twitter', 'TikTok', 'Facebook'
 const ExampleModal: React.FC<ExampleModalProps> = ({ isOpen, onClose, onSave }) => {
   const [platform, setPlatform] = useState<'Instagram' | 'YouTube' | 'Twitter' | 'TikTok' | 'Facebook' | 'LinkedIn'>('Instagram');
   const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('');
 
   const handleSave = () => {
     if (!url) {
       alert("Please enter a URL.");
       return;
     }
-    onSave({ platform, url });
+    if (!title) {
+      alert("Please enter a title.");
+      return;
+    }
+    onSave({ platform, url, title });
     onClose();
     setPlatform('Instagram'); // Reset platform to default after saving
     setUrl('');
+    setTitle('');
   };
 
   if (!isOpen) return null;
@@ -32,6 +38,16 @@ const ExampleModal: React.FC<ExampleModalProps> = ({ isOpen, onClose, onSave }) 
     <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4  z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full space-y-4">
         <h2 className="text-lg font-semibold text-gray-900">Add Content Example</h2>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <input 
+            type="text" 
+            value={title} 
+            onChange={(e) => setTitle(e.target.value)} 
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Summer Campaign 2023"
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Platform</label>
           <select 

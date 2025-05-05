@@ -4,10 +4,17 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import signUp from "../firebase/signup";
+import validateUsername, { validateUsernameFormat } from "../firebase/validateUsername";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckCircle, Sparkles } from "lucide-react";
+import { CheckCircle, Sparkles, Loader2 } from "lucide-react";
 import { useTheme } from "../context/themeContext";
+
+// Import shadcn components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function SignupForm() {
   const [email, setEmail] = useState("");
@@ -16,6 +23,8 @@ function SignupForm() {
   const [username, setUsername] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [validatingUsername, setValidatingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,14 +35,75 @@ function SignupForm() {
     const usernameParam = searchParams?.get('username');
     if (usernameParam) {
       setUsername(usernameParam);
+      // Validate the passed username
+      const formatResult = validateUsernameFormat(usernameParam);
+      if (!formatResult.isValid) {
+        setUsernameError(formatResult.error || "Invalid username");
+      } else {
+        checkUsername(usernameParam);
+      }
     }
   }, [searchParams]);
+
+  // Debounced username validation
+  const checkUsername = async (value: string) => {
+    if (!value) {
+      setUsernameError("");
+      return;
+    }
+    
+    // First check format locally without API call
+    const formatResult = validateUsernameFormat(value);
+    if (!formatResult.isValid) {
+      setUsernameError(formatResult.error || "Invalid username");
+      return;
+    }
+    
+    // Then check availability with API
+    setValidatingUsername(true);
+    try {
+      const result = await validateUsername(value);
+      if (!result.isValid) {
+        setUsernameError(result.error || "Username is not available");
+      } else {
+        setUsernameError("");
+      }
+    } catch (error) {
+      console.error("Error validating username:", error);
+      setUsernameError("Error checking username");
+    } finally {
+      setValidatingUsername(false);
+    }
+  };
+
+  // Handle username change with debounce
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUsername(value);
+    setUsernameError("");
+    
+    // Clear any existing timeout
+    const timeoutId = setTimeout(() => {
+      checkUsername(value);
+    }, 500); // 500ms debounce
+    
+    return () => clearTimeout(timeoutId);
+  };
 
   const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+    setErrorMsg("");
 
     try {
+      // Final username validation before submitting
+      const usernameValidation = await validateUsername(username);
+      if (!usernameValidation.isValid) {
+        setErrorMsg(usernameValidation.error || "Invalid username");
+        setLoading(false);
+        return;
+      }
+
       const { result, error } = await signUp(
         username,
         email,
@@ -48,6 +118,7 @@ function SignupForm() {
       }
     } catch (error) {
       console.log(error);
+      setErrorMsg("An unexpected error occurred");
     }
     
     setLoading(false);
@@ -55,10 +126,34 @@ function SignupForm() {
 
   const handleContinue = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    if (email && username) {
-      setStep(step + 1);
-    } else {
+    
+    if (!email || !username) {
       setErrorMsg('Please fill out all fields.');
+      return;
+    }
+    
+    if (usernameError) {
+      setErrorMsg('Please fix the username issues before continuing.');
+      return;
+    }
+    
+    // Final check for username validity
+    setValidatingUsername(true);
+    try {
+      const result = await validateUsername(username);
+      if (!result.isValid) {
+        setUsernameError(result.error || "Username is not available");
+        setErrorMsg('Please fix the username issues before continuing.');
+        setValidatingUsername(false);
+        return;
+      }
+      
+      setStep(step + 1);
+    } catch (error) {
+      console.error("Error validating username:", error);
+      setErrorMsg("Error checking username");
+    } finally {
+      setValidatingUsername(false);
     }
   };
 
@@ -139,27 +234,34 @@ function SignupForm() {
                 </p>
               </div>
 
+              {errorMsg && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertDescription>{errorMsg}</AlertDescription>
+                </Alert>
+              )}
+
               {step === 1 && (
                 <form onSubmit={handleContinue} className="space-y-5">
                   <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Email
-                    </label>
-                    <div className={`
-                      relative 
-                      ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
-                      bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden
-                      transition-all duration-300
-                    `}>
-                      <input
+                    </Label>
+                    <div className="mt-1.5">
+                      <Input
                         id="email"
-                        name="email"
                         type="email"
                         required
-                        className="w-full p-3 text-gray-800 dark:text-white focus:outline-none bg-transparent"
                         placeholder="youremail@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className={`
+                          w-full p-3 rounded-xl 
+                          ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
+                          bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                          text-gray-800 dark:text-white placeholder:text-gray-400
+                          focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                          transition-all duration-300
+                        `}
                         onFocus={() => setIsInputFocused(true)}
                         onBlur={() => setIsInputFocused(false)}
                       />
@@ -167,118 +269,148 @@ function SignupForm() {
                   </div>
                   
                   <div>
-                    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <Label htmlFor="username" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Username
-                    </label>
-                    <div className={`
-                      relative flex items-center
-                      ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
-                      bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden
-                      transition-all duration-300
-                    `}>
-                      <span className="text-purple-600 dark:text-purple-400 font-medium pl-3">influyst.com/</span>
-                      <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        required
-                        className="w-full p-3 text-gray-800 dark:text-white focus:outline-none bg-transparent"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
-                      />
+                    </Label>
+                    <div className="mt-1.5">
+                      <div className={`
+                        flex items-center relative
+                        ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
+                        ${usernameError ? 'ring-2 ring-red-200 dark:ring-red-900/30 border-red-300 dark:border-red-700' : ''}
+                        ${!usernameError && username && !validatingUsername ? 'ring-2 ring-green-200 dark:ring-green-900/30 border-green-300 dark:border-green-700' : ''}
+                        bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600
+                        transition-all duration-300
+                      `}>
+                        <span className="text-purple-600 dark:text-purple-400 font-medium pl-3">influyst.com/</span>
+                        <Input
+                          id="username"
+                          type="text"
+                          required
+                          placeholder="username"
+                          value={username}
+                          onChange={handleUsernameChange}
+                          className={`
+                            flex-1 border-0 bg-transparent p-3
+                            text-gray-800 dark:text-white placeholder:text-gray-400
+                            focus:outline-none focus:ring-0
+                          `}
+                          onFocus={() => setIsInputFocused(true)}
+                          onBlur={() => setIsInputFocused(false)}
+                        />
+                        {validatingUsername && (
+                          <div className="absolute right-3 text-purple-500">
+                            <Loader2 className="animate-spin h-5 w-5" />
+                          </div>
+                        )}
+                        {!validatingUsername && username && !usernameError && (
+                          <div className="absolute right-3 text-green-500">
+                            <CheckCircle className="h-5 w-5" />
+                          </div>
+                        )}
+                      </div>
+                      {usernameError && (
+                        <p className="mt-1.5 text-sm text-red-500">{usernameError}</p>
+                      )}
+                      {!usernameError && username && !validatingUsername && (
+                        <p className="mt-1.5 text-sm text-green-500">Username is available</p>
+                      )}
                     </div>
                   </div>
                   
-                  <button
+                  <Button
                     type="submit"
-                    className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden"
-                    disabled={loading}
+                    disabled={loading || validatingUsername || !!usernameError}
+                    className="w-full py-6 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 
+                    text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden h-auto"
                   >
-                    <span className="relative z-10">Continue</span>
+                    {validatingUsername ? (
+                      <span className="flex items-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Validating...
+                      </span>
+                    ) : (
+                      <span className="relative z-10">Continue</span>
+                    )}
                     <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500">
                       <div className="absolute inset-0 bg-white opacity-20 blur-lg"></div>
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500"></div>
                     </div>
-                  </button>
-                  
-                  {errorMsg && (
-                    <p className="text-red-500 text-sm mt-2">{errorMsg}</p>
-                  )}
-                </form>
-              )}
-              
-              {step === 2 && (
-                <form onSubmit={handleSignUp} className="space-y-5">
-                  <div>
-                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Password
-                    </label>
-                    <div className={`
-                      relative
-                      ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
-                      bg-white dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden
-                      transition-all duration-300
-                    `}>
-                      <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        required
-                        className="w-full p-3 text-gray-800 dark:text-white focus:outline-none bg-transparent"
-                        placeholder="Create a secure password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
-                      />
-                    </div>
+                  </Button>
+
+                  <div className="text-center text-gray-500 dark:text-gray-400 mt-4">
+                    Already have an account? <Link href="/login" className="text-purple-600 dark:text-purple-400 font-medium hover:underline">Sign in</Link>
                   </div>
-                  
-                  <button
-                    type="submit"
-                    className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden"
-                    disabled={loading}
-                  >
-                    <span className="relative z-10">Create Account</span>
-                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-white opacity-20 blur-lg"></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500"></div>
-                    </div>
-                  </button>
-                  
-                  {errorMsg && (
-                    <p className="text-red-500 text-sm mt-2">{errorMsg}</p>
-                  )}
                 </form>
               )}
 
-              <div className="text-center mt-6">
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Already have an account?{" "}
-                  <Link
-                    href="/login"
-                    className="text-purple-600 dark:text-purple-400 font-medium hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
-                  >
-                    Log in
-                  </Link>
-                </p>
-              </div>
-            </div>
-            
-            {/* Features list */}
-            <div className="bg-gray-50 dark:bg-gray-700/40 p-6 border-t border-gray-100 dark:border-gray-700">
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-3 font-medium">Influyst includes:</p>
-              <div className="space-y-2">
-                {['Customizable media kit', 'Real-time analytics', 'One shareable URL'].map((feature) => (
-                  <div key={feature} className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-300 text-sm">{feature}</span>
+              {step === 2 && (
+                <form onSubmit={handleSignUp} className="space-y-5">
+                  <div className="mb-6 text-center">
+                    <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 mb-3">
+                      <CheckCircle className="h-6 w-6" />
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-medium text-purple-600 dark:text-purple-400">influyst.com/{username}</span> is all yours!
+                    </p>
                   </div>
-                ))}
-              </div>
+                  
+                  <div>
+                    <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Set Password
+                    </Label>
+                    <div className="mt-1.5">
+                      <Input
+                        id="password"
+                        type="password"
+                        required
+                        placeholder="Create a strong password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={`
+                          w-full p-3 rounded-xl 
+                          ${isInputFocused ? 'ring-2 ring-purple-200 dark:ring-purple-900/30' : ''} 
+                          bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                          text-gray-800 dark:text-white placeholder:text-gray-400
+                          focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                          transition-all duration-300
+                        `}
+                        onFocus={() => setIsInputFocused(true)}
+                        onBlur={() => setIsInputFocused(false)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-6 px-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 
+                    text-white font-medium rounded-xl transition-all duration-300 relative overflow-hidden h-auto"
+                  >
+                    {loading ? (
+                      <span className="flex items-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </span>
+                    ) : (
+                      <span className="relative z-10">Create Account</span>
+                    )}
+                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-0 bg-white opacity-20 blur-lg"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500"></div>
+                    </div>
+                  </Button>
+
+                  <div className="flex justify-center">
+                    <button 
+                      type="button" 
+                      onClick={() => setStep(1)}
+                      className="text-gray-500 dark:text-gray-400 text-sm hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                    >
+                      &larr; Go back
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </motion.div>
         </div>
@@ -299,10 +431,9 @@ function SignupForm() {
   );
 }
 
-// Page component wrapped with Suspense
 export default function Page() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div></div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <SignupForm />
     </Suspense>
   );

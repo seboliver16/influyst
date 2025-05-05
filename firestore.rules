@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if username is unique
+    function isUsernameUnique(username) {
+      return !exists(/databases/$(database)/documents/users/
+        where username == username));
+    }
+    
+    // Helper to verify authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper to verify user is the owner of the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Anyone can read user data
+      allow read: if true;
+      
+      // Only authenticated users can create, with username validation
+      allow create: if isAuthenticated() && 
+                     isUsernameUnique(request.resource.data.username) &&
+                     request.auth.uid == userId;
+      
+      // Only the owner can update their data, with username validation if changed
+      allow update: if isOwner(userId) && 
+                     (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['username']) || 
+                      isUsernameUnique(request.resource.data.username));
+      
+      // Only owner can delete their account             
+      allow delete: if isOwner(userId);
+      
+      // Analytics subcollection
+      match /analyticsEvents/{eventId} {
+        allow read: if isOwner(userId);
+        allow write: if true; // Public can create analytics events
+      }
+    }
+    
+    // Additional collections can be added here with their rules
+  }
+} 
