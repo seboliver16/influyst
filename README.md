@@ -2,7 +2,6 @@
 
 Influyst is a platform that helps creators showcase their social media stats and streamline brand partnerships through personalized media kits.
 
-![Influyst Screenshot](public/screenshot.png)
 
 ## Features
 
