@@ -7,28 +7,25 @@ interface InstagramEmbedProps {
 }
 
 const InstagramEmbed: React.FC<InstagramEmbedProps> = ({ url }) => {
-  const instagramId = extractInstagramId(url);
-  const directPostUrl = instagramId ? `https://www.instagram.com/p/${instagramId}/embed` : "https://www.instagram.com";
+  const idMatch = url.match(/\/(reel|p)\/([^/?]+)/);
+  const instagramId = idMatch ? idMatch[2] : null;
+  const embedUrl = instagramId ? `https://www.instagram.com/p/${instagramId}/embed/` : url;
 
+  // Use a slightly larger padding-bottom for Instagram to prevent content from being cut off
+  // Instagram typically needs more vertical space than Twitter
   return (
-    <div className="relative pb-[175.25%]  overflow-hidden"> {/* This creates a container with a 16:9 aspect ratio */}
+    <div className="relative pb-[190%] overflow-hidden">
       <iframe
-        src={directPostUrl}
-        className="absolute top-0 left-0 w-full h-full border-none" 
+        src={embedUrl}
+        className="absolute top-0 left-0 w-full h-full border-none"
         frameBorder="0"
         scrolling="no"
-        allowTransparency={true}
+        allowTransparency
         allowFullScreen
+        loading="lazy"
       ></iframe>
     </div>
   );
 };
 
-
-function extractInstagramId(url: string) {
-  const match = url.match(/\/(reel|p)\/([^/?]+)\//);
-  return match ? match[2] : null;
-}
-
-
-export { InstagramEmbed as default };
+export default InstagramEmbed;

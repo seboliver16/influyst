@@ -11,8 +11,9 @@ const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({ url }) => {
   const videoId = extractYouTubeId(url);
   const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : "";
 
+  // Use 16:9 aspect ratio (56.25%) which is standard for YouTube videos
   return (
-    <div className="relative pb-[175.25%] overflow-hidden"> {/* This creates a container as per your specifications */}
+    <div className="relative pb-[56.25%] overflow-hidden">
       <iframe
         src={embedUrl}
         className="absolute top-0 left-0 w-full h-full border-none"

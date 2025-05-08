@@ -15,8 +15,9 @@ const TikTokEmbed: React.FC<{ url: string }> = ({ url }) => {
     };
   }, []);
 
+  // Use a 9:16 aspect ratio (177.78%) which is typical for TikTok videos
   return (
-    <div className="relative pb-[175.25%]  mx-auto overflow-hidden">
+    <div className="relative pb-[177.78%] mx-auto overflow-hidden">
       <blockquote className="tiktok-embed" cite={url} data-video-id={url.split('/').pop()} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0' }}>
         <section>
           <a target="_blank" rel="noopener noreferrer" href={url}>Loading TikTok...</a>

@@ -60,43 +60,41 @@ const LinkedInEmbed: React.FC<LinkedInEmbedProps> = ({ url }) => {
     setLoading(false);
   };
 
+  if (error) {
+    return (
+      <div className="p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+        <p>{error}</p>
+        <a 
+          href={url} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="mt-2 inline-block text-blue-600 hover:underline"
+        >
+          View on LinkedIn
+        </a>
+      </div>
+    );
+  }
+
   return (
-    <div className="linkedin-embed-container w-full">
+    <div className="relative pb-[175.25%] overflow-hidden">
       {loading && (
-        <div className="flex justify-center items-center p-6 bg-gray-50 rounded-lg">
+        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-50">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           <span className="ml-2 text-gray-600">Loading LinkedIn content...</span>
         </div>
       )}
       
-      {error && (
-        <div className="p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
-          <p>{error}</p>
-          <a 
-            href={url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="mt-2 inline-block text-blue-600 hover:underline"
-          >
-            View on LinkedIn
-          </a>
-        </div>
-      )}
-      
       <iframe
         src={processedUrl}
-        width="100%"
-        height="550"
+        className="absolute top-0 left-0 w-full h-full border-none"
         frameBorder="0"
+        scrolling="no"
         allowFullScreen
         title="Embedded LinkedIn Post"
-        style={{ 
-          border: 'none', 
-          overflow: 'hidden', 
-          display: loading ? 'none' : 'block' 
-        }}
         onLoad={handleIframeLoad}
         onError={handleIframeError}
+        loading="lazy"
       ></iframe>
     </div>
   );
