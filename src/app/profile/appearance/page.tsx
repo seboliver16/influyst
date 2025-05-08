@@ -13,10 +13,14 @@ import {
   LayoutOption, 
   ButtonStyleOption,
   FontFamilyOption,
+  BackgroundPatternOption,
   FONT_FAMILY_NAMES,
   LAYOUT_OPTIONS,
   BUTTON_STYLES,
-  CONTENT_SECTIONS
+  CONTENT_SECTIONS,
+  BACKGROUND_PATTERNS,
+  SCROLL_EFFECT_OPTIONS,
+  ScrollEffectOption
 } from '../../types/customization';
 import { 
   getUserCustomizationSettings, 
@@ -53,6 +57,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 export default function AppearancePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -117,11 +122,26 @@ export default function AppearancePage() {
     setSaving(true);
     setError('');
     
+    // Create a clean settings object that explicitly sets optional fields to undefined if they're not present
+    const settingsToSave: CustomizationSettings = {
+      ...DEFAULT_CUSTOMIZATION,
+      ...previewSettings,
+      // Explicitly set these optional fields to undefined if they're falsy
+      coverImageUrl: previewSettings.coverImageUrl || undefined,
+      backgroundImageUrl: previewSettings.backgroundImageUrl || undefined,
+      secondaryColor: previewSettings.secondaryColor || undefined,
+      headingColor: previewSettings.headingColor || undefined,
+      bodyTextColor: previewSettings.bodyTextColor || undefined,
+      linkTextColor: previewSettings.linkTextColor || undefined,
+      customCSS: previewSettings.customCSS || undefined,
+      customUrlPath: previewSettings.customUrlPath || undefined
+    };
+
     try {
-      const success = await saveUserCustomizationSettings(user.id, previewSettings);
+      const success = await saveUserCustomizationSettings(user.id, settingsToSave);
       
       if (success) {
-        setCurrentSettings(previewSettings);
+        setCurrentSettings(settingsToSave); // Use the cleaned settings object
         setHasUnsavedChanges(false);
         toast.success('Appearance settings saved successfully!');
       } else {
@@ -237,7 +257,7 @@ export default function AppearancePage() {
               <CardContent className="p-4">
                 <Tabs defaultValue="theme" className="w-full" onValueChange={setActiveTab} value={activeTab}>
                   <TabsList className="grid w-full grid-cols-5 gap-1 p-1 h-auto bg-gray-100 dark:bg-gray-800 rounded-lg mb-6">
-                    {(['theme', 'layout', 'fonts', 'elements', 'media'] as const).map((tabValue) => (
+                    {(['theme', 'layout', 'fonts', 'elements', 'media', 'interactive'] as const).map((tabValue) => (
                       <TabsTrigger 
                         key={tabValue} 
                         value={tabValue} 
@@ -248,6 +268,7 @@ export default function AppearancePage() {
                         {tabValue === 'fonts' && <Type className="h-4 w-4 mb-1" />}
                         {tabValue === 'elements' && <Square className="h-4 w-4 mb-1" />}
                         {tabValue === 'media' && <ImageIcon className="h-4 w-4 mb-1" />}
+                        {tabValue === 'interactive' && <span className="h-4 w-4 mb-1">✨</span>}
                         {tabValue.charAt(0).toUpperCase() + tabValue.slice(1)}
                     </TabsTrigger>
                     ))}
@@ -536,6 +557,11 @@ export default function AppearancePage() {
                       <Separator />
                       
                       <div>
+                        <Label className="text-base font-semibold">Background</Label>
+                        <p className="text-sm text-gray-500 mb-3">Choose a background image or pattern for your profile.</p>
+                        
+                        <div className="space-y-6">
+                      <div>
                         <div className="flex items-center justify-between mb-2">
                           <Label className="text-sm font-medium">
                             Background Image
@@ -544,22 +570,236 @@ export default function AppearancePage() {
                             checked={!!previewSettings.backgroundImageUrl}
                             onCheckedChange={(checked) => setPreviewSettings({
                               ...previewSettings,
-                              backgroundImageUrl: checked ? previewSettings.backgroundImageUrl || '/default-bg.jpg' : undefined
+                                  backgroundImageUrl: checked ? previewSettings.backgroundImageUrl || '/default-bg.jpg' : undefined,
+                                  // Disable pattern if image is enabled
+                                  backgroundPattern: checked ? 'none' : previewSettings.backgroundPattern
                             })}
                           />
                         </div>
                         {previewSettings.backgroundImageUrl && (
                           <div className="mt-2">
+                                <BackgroundImagePicker 
+                                  currentImage={previewSettings.backgroundImageUrl}
+                                  onImageSelected={(imageDataUrl: string) => {
+                                    setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundImageUrl: imageDataUrl,
+                                      // Disable pattern if image is enabled
+                                      backgroundPattern: 'none'
+                                    });
+                                  }}
+                                  onImageRemoved={() => {
+                                    setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundImageUrl: undefined
+                                    });
+                                  }}
+                                  title="Background Image"
+                                  description="Upload an image to use as your page background"
+                                  aspectRatio="cover"
+                                />
+                              </div>
+                            )}
+                          </div>
+                          
+                          <Separator />
+                          
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <Label className="text-sm font-medium">
+                                Background Pattern
+                              </Label>
+                              <Switch 
+                                checked={previewSettings.backgroundPattern !== 'none'}
+                                disabled={!!previewSettings.backgroundImageUrl}
+                                onCheckedChange={(checked) => setPreviewSettings({
+                                  ...previewSettings,
+                                  backgroundPattern: checked ? 'girlboss' : 'none'
+                                })}
+                              />
+                            </div>
+                            
+                            {previewSettings.backgroundPattern !== 'none' && !previewSettings.backgroundImageUrl && (
+                              <div className="space-y-5 mt-4">
+                                <div>
+                                  <Label className="text-sm mb-2 block">Style & Mood</Label>
+                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {Object.entries(BACKGROUND_PATTERNS)
+                                      .filter(([key]) => key !== 'none')
+                                      .map(([value, { name, description, colors }]) => {
+                                        // Generate a simple preview gradient for each pattern
+                                        const color1 = colors ? colors[0] : previewSettings.accentColor;
+                                        const color2 = colors ? colors[1] || colors[0] : previewSettings.secondaryColor || previewSettings.accentColor;
+                                        
+                                        return (
+                                          <div
+                                            key={value}
+                                            className={`relative overflow-hidden border rounded-md p-3 cursor-pointer transition-all hover:scale-105 ${
+                                              previewSettings.backgroundPattern === value 
+                                                ? 'ring-2 ring-offset-1 ring-accent' 
+                                                : 'hover:border-accent'
+                                            }`}
+                                            onClick={() => setPreviewSettings({
+                                              ...previewSettings,
+                                              backgroundPattern: value as BackgroundPatternOption
+                                            })}
+                                            style={{
+                                              background: value === 'minimal' 
+                                                ? `linear-gradient(90deg, ${color1}20 1px, transparent 1px),
+                                                   linear-gradient(180deg, ${color1}20 1px, transparent 1px)`
+                                                : `linear-gradient(45deg, ${color1}40, ${color2}40)`,
+                                              backgroundSize: value === 'minimal' ? '10px 10px' : '100% 100%',
+                                            }}
+                                          >
+                                            <div className="bg-white dark:bg-gray-800 bg-opacity-80 dark:bg-opacity-80 backdrop-blur-sm p-2 rounded-sm">
+                                              <p className="font-medium text-gray-900 dark:text-white text-sm">{name}</p>
+                                              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{description}</p>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <Label className="text-sm mb-2 block">Pattern Color Override (Optional)</Label>
+                                  <div className="flex items-center space-x-3">
+                                    <div 
+                                      className="h-10 w-10 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm cursor-pointer flex items-center justify-center"
+                                      style={{ 
+                                        backgroundColor: previewSettings.backgroundPatternColorOverride || 'transparent',
+                                        borderColor: previewSettings.backgroundPatternColorOverride ? 'transparent' : 'currentColor'
+                                      }}
+                                      onClick={() => {
+                                        if (previewSettings.backgroundPatternColorOverride) {
+                                          setPreviewSettings({
+                                            ...previewSettings,
+                                            backgroundPatternColorOverride: undefined
+                                          });
+                                        } else {
+                                          // Use accent color as default
+                                          setPreviewSettings({
+                                            ...previewSettings,
+                                            backgroundPatternColorOverride: previewSettings.accentColor
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      {!previewSettings.backgroundPatternColorOverride && (
+                                        <span className="text-xs font-medium">AUTO</span>
+                                      )}
+                                    </div>
+                                    
+                                    {previewSettings.backgroundPatternColorOverride && (
                             <Input 
-                              placeholder="https://example.com/image.jpg"
-                              value={previewSettings.backgroundImageUrl}
+                                        value={previewSettings.backgroundPatternColorOverride}
                               onChange={(e) => setPreviewSettings({
                                 ...previewSettings,
-                                backgroundImageUrl: e.target.value
-                              })}
-                            />
+                                          backgroundPatternColorOverride: e.target.value
+                                        })}
+                                        placeholder="Enter a hex color"
+                                        className="w-40 font-mono text-sm"
+                                      />
+                                    )}
+                                    
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="ml-auto"
+                                      onClick={() => setPreviewSettings({
+                                        ...previewSettings,
+                                        backgroundPatternColorOverride: undefined
+                                      })}
+                                      disabled={!previewSettings.backgroundPatternColorOverride}
+                                    >
+                                      Reset
+                                    </Button>
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <div className="flex justify-between mb-1">
+                                    <Label htmlFor="pattern-opacity" className="text-sm">
+                                      Pattern Opacity: {previewSettings.backgroundPatternOpacity || 30}%
+                                    </Label>
+                                  </div>
+                                  <Input 
+                                    id="pattern-opacity"
+                                    type="range" 
+                                    min={5} 
+                                    max={100} 
+                                    step={5}
+                                    value={previewSettings.backgroundPatternOpacity || 30}
+                                    onChange={(e) => setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundPatternOpacity: parseInt(e.target.value)
+                                    })}
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+                                
+                                <div>
+                                  <div className="flex justify-between mb-1">
+                                    <Label htmlFor="pattern-scale" className="text-sm">
+                                      Pattern Scale: {previewSettings.backgroundPatternScale || 100}%
+                                    </Label>
+                                  </div>
+                                  <Input 
+                                    id="pattern-scale"
+                                    type="range" 
+                                    min={50} 
+                                    max={200} 
+                                    step={10}
+                                    value={previewSettings.backgroundPatternScale || 100}
+                                    onChange={(e) => setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundPatternScale: parseInt(e.target.value)
+                                    })}
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+
+                                <Separator />
+
+                                <div className="flex items-center justify-between">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-xs"
+                                    onClick={() => setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundPatternOpacity: 30,
+                                      backgroundPatternScale: 100,
+                                      backgroundPatternColorOverride: undefined
+                                    })}
+                                  >
+                                    Reset to Default
+                                  </Button>
+                                  
+                                  <Button 
+                                    variant="default" 
+                                    size="sm" 
+                                    className="text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                                    onClick={() => {
+                                      // Pick a random trendy pattern
+                                      const trendyPatterns = ['girlboss', 'summer', 'hamptons', 'creative', 'floral', 'retro', 'neon', 'luxury', 'fashion', 'tropical'];
+                                      const randomPattern = trendyPatterns[Math.floor(Math.random() * trendyPatterns.length)] as BackgroundPatternOption;
+                                      
+                                      setPreviewSettings({
+                                        ...previewSettings,
+                                        backgroundPattern: randomPattern,
+                                        backgroundPatternOpacity: 40,
+                                        backgroundPatternScale: 110
+                                      });
+                                    }}
+                                  >
+                                    Surprise Me!
+                                  </Button>
+                                </div>
                           </div>
                         )}
+                          </div>
+                        </div>
                       </div>
 
                       <div>
@@ -857,18 +1097,16 @@ export default function AppearancePage() {
                               coverImageUrl: imageDataUrl
                             });
                           }}
+                          onImageRemoved={() => {
+                            setPreviewSettings({
+                              ...previewSettings,
+                              coverImageUrl: undefined
+                            });
+                          }}
+                          title="Cover Image"
+                          description="Upload an image to use as your profile header"
+                          aspectRatio="cover"
                         />
-                         {previewSettings.coverImageUrl && (
-                           <Button 
-                            variant="outline" 
-                            size="sm" 
-                             className="mt-2" 
-                            onClick={() => setPreviewSettings({...previewSettings, coverImageUrl: undefined})}
-                            disabled={saving}
-                           >
-                            Remove Cover Image
-                          </Button>
-                         )}
                        </div>
                        
                        <div className="flex items-center space-x-2 mt-2">
@@ -882,8 +1120,7 @@ export default function AppearancePage() {
                          </Label>
                        </div>
                        
-                       {/* Remove Background Image section from media tab */}
-                       {/* <Separator />
+                       <Separator />
                        
                        <div>
                          <Label className="text-base font-semibold">Page Background Image</Label>
@@ -895,23 +1132,22 @@ export default function AppearancePage() {
                            onImageSelected={(imageDataUrl: string) => {
                              setPreviewSettings({
                                ...previewSettings,
-                               backgroundImageUrl: imageDataUrl
+                              backgroundImageUrl: imageDataUrl,
+                              // Disable pattern if image is enabled
+                              backgroundPattern: 'none'
                              });
                            }}
-                           label="Upload Background Image"
-                         />
-                         {previewSettings.backgroundImageUrl && (
-                           <Button 
-                             variant="outline" 
-                             size="sm" 
-                             className="mt-2" 
-                             onClick={() => setPreviewSettings({...previewSettings, backgroundImageUrl: undefined})}
-                             disabled={saving}
-                           >
-                             Remove Background Image
-                           </Button>
-                         )}
-                       </div> */}
+                          onImageRemoved={() => {
+                            setPreviewSettings({
+                              ...previewSettings,
+                              backgroundImageUrl: undefined
+                            });
+                          }}
+                          title="Background Image"
+                          description="Upload an image to use as your page background"
+                          aspectRatio="cover"
+                        />
+                      </div>
                        
                        <Separator />
                        
@@ -941,7 +1177,302 @@ export default function AppearancePage() {
                            </Label>
                          </div>
                        </div>
-                       
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="interactive">
+                    <div className="space-y-6">
+                      <div>
+                        <Label className="text-base font-semibold">Interactive Elements</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          Add interactive features to your profile to engage visitors.
+                        </p>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id="enable-interactive"
+                              checked={previewSettings.enableInteractiveElements}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableInteractiveElements: checked
+                              })}
+                            />
+                            <Label htmlFor="enable-interactive">Enable interactive elements</Label>
+                          </div>
+                          
+                          {previewSettings.enableInteractiveElements && (
+                            <RadioGroup 
+                              value={previewSettings.interactiveElementStyle || 'hover'}
+                              onValueChange={(value: any) => setPreviewSettings({
+                                ...previewSettings,
+                                interactiveElementStyle: value
+                              })}
+                              className="grid grid-cols-2 gap-2 mt-2"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="hover" id="interactive-hover" />
+                                <Label htmlFor="interactive-hover" className="text-sm">Hover effects</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="click" id="interactive-click" />
+                                <Label htmlFor="interactive-click" className="text-sm">Click effects</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="scroll" id="interactive-scroll" />
+                                <Label htmlFor="interactive-scroll" className="text-sm">Scroll effects</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="custom" id="interactive-custom" />
+                                <Label htmlFor="interactive-custom" className="text-sm">Custom</Label>
+                              </div>
+                            </RadioGroup>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <Label className="text-base font-semibold">Card Effects</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          Add special effects to cards on your profile.
+                        </p>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id="card-tilt"
+                              checked={previewSettings.enableCardTiltEffect}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableCardTiltEffect: checked
+                              })}
+                            />
+                            <Label htmlFor="card-tilt">Enable 3D tilt effect on cards</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id="section-animations"
+                              checked={previewSettings.enableSectionEntranceAnimations}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableSectionEntranceAnimations: checked
+                              })}
+                            />
+                            <Label htmlFor="section-animations">Enable section entrance animations</Label>
+                          </div>
+                          
+                          {previewSettings.enableSectionEntranceAnimations && (
+                            <RadioGroup 
+                              value={previewSettings.sectionEntranceAnimationStyle || 'fade'}
+                              onValueChange={(value: any) => setPreviewSettings({
+                                ...previewSettings,
+                                sectionEntranceAnimationStyle: value
+                              })}
+                              className="grid grid-cols-2 gap-2 mt-2"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="fade" id="animation-fade" />
+                                <Label htmlFor="animation-fade" className="text-sm">Fade In</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="slide" id="animation-slide" />
+                                <Label htmlFor="animation-slide" className="text-sm">Slide Up</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="zoom" id="animation-zoom" />
+                                <Label htmlFor="animation-zoom" className="text-sm">Zoom In</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="flip" id="animation-flip" />
+                                <Label htmlFor="animation-flip" className="text-sm">Flip</Label>
+                              </div>
+                            </RadioGroup>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <Label className="text-base font-semibold">Scroll Effects</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          Add effects that trigger as visitors scroll through your profile.
+                        </p>
+                        
+                        <RadioGroup 
+                          value={previewSettings.scrollEffects || 'none'}
+                          onValueChange={(value: any) => setPreviewSettings({
+                            ...previewSettings,
+                            scrollEffects: value
+                          })}
+                          className="grid grid-cols-2 gap-2"
+                        >
+                          {Object.entries(SCROLL_EFFECT_OPTIONS).map(([value, label]) => (
+                            <div key={value} className="flex items-center space-x-2">
+                              <RadioGroupItem value={value} id={`scroll-${value}`} />
+                              <Label htmlFor={`scroll-${value}`} className="text-sm">{label as string}</Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <Label className="text-base font-semibold">Profile Image Shape</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          Choose a shape for your profile image.
+                        </p>
+                        
+                        <RadioGroup 
+                          value={previewSettings.profileImageShape || 'circle'}
+                          onValueChange={(value: any) => setPreviewSettings({
+                            ...previewSettings,
+                            profileImageShape: value
+                          })}
+                          className="grid grid-cols-2 gap-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="circle" id="shape-circle" />
+                            <Label htmlFor="shape-circle" className="text-sm">Circle</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="square" id="shape-square" />
+                            <Label htmlFor="shape-square" className="text-sm">Square</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="rounded" id="shape-rounded" />
+                            <Label htmlFor="shape-rounded" className="text-sm">Rounded</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="hexagon" id="shape-hexagon" />
+                            <Label htmlFor="shape-hexagon" className="text-sm">Hexagon</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <Label className="text-base font-semibold">Image Filters</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          Apply filters to all images on your profile.
+                        </p>
+                        
+                        <RadioGroup 
+                          value={previewSettings.imageFilter || 'none'}
+                          onValueChange={(value: any) => setPreviewSettings({
+                            ...previewSettings,
+                            imageFilter: value
+                          })}
+                          className="grid grid-cols-2 gap-2"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="none" id="filter-none" />
+                            <Label htmlFor="filter-none" className="text-sm">None</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="grayscale" id="filter-grayscale" />
+                            <Label htmlFor="filter-grayscale" className="text-sm">Grayscale</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="sepia" id="filter-sepia" />
+                            <Label htmlFor="filter-sepia" className="text-sm">Sepia</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="brightness" id="filter-brightness" />
+                            <Label htmlFor="filter-brightness" className="text-sm">Brightness</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="contrast" id="filter-contrast" />
+                            <Label htmlFor="filter-contrast" className="text-sm">Contrast</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="hue-rotate" id="filter-hue" />
+                            <Label htmlFor="filter-hue" className="text-sm">Hue Rotate</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div>
+                        <Label className="text-base font-semibold">Advanced Features (Beta)</Label>
+                        <p className="text-sm text-gray-500 mb-3">
+                          These features are in beta and may not work on all browsers.
+                        </p>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Switch 
+                              id="enable-mouse-trail"
+                              checked={previewSettings.enableCustomMouseTrail}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableCustomMouseTrail: checked
+                              })}
+                            />
+                            <Label htmlFor="enable-mouse-trail">Enable custom mouse trail</Label>
+                          </div>
+                          
+                          {previewSettings.enableCustomMouseTrail && (
+                            <RadioGroup 
+                              value={previewSettings.mouseTrailStyle || 'particles'}
+                              onValueChange={(value: any) => setPreviewSettings({
+                                ...previewSettings,
+                                mouseTrailStyle: value
+                              })}
+                              className="grid grid-cols-2 gap-2 mt-2"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="particles" id="trail-particles" />
+                                <Label htmlFor="trail-particles" className="text-sm">Particles</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="trail" id="trail-line" />
+                                <Label htmlFor="trail-line" className="text-sm">Line Trail</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="glow" id="trail-glow" />
+                                <Label htmlFor="trail-glow" className="text-sm">Glow Effect</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="custom" id="trail-custom" />
+                                <Label htmlFor="trail-custom" className="text-sm">Custom</Label>
+                              </div>
+                            </RadioGroup>
+                          )}
+                          
+                          <div className="mt-4 flex items-center space-x-2">
+                            <Switch 
+                              id="enable-audio"
+                              checked={previewSettings.enableAudioBackground}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableAudioBackground: checked
+                              })}
+                            />
+                            <Label htmlFor="enable-audio">Enable background audio</Label>
+                            <Badge variant="outline" className="ml-2 text-xs">PRO</Badge>
+                          </div>
+                          
+                          <div className="mt-4 flex items-center space-x-2">
+                            <Switch 
+                              id="enable-loading"
+                              checked={previewSettings.enableCustomLoadingScreen}
+                              onCheckedChange={(checked) => setPreviewSettings({
+                                ...previewSettings,
+                                enableCustomLoadingScreen: checked
+                              })}
+                            />
+                            <Label htmlFor="enable-loading">Custom loading screen</Label>
+                            <Badge variant="outline" className="ml-2 text-xs">PRO</Badge>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>

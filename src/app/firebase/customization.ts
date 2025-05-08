@@ -48,9 +48,18 @@ export async function saveUserCustomizationSettings(
   try {
     const userDocRef = doc(db, 'users', userId);
     
-    // Update the customization field in the user document
+    // Create a clean copy of settings, removing any top-level undefined properties.
+    // This ensures that Firestore correctly removes fields that are meant to be unset.
+    const cleanedSettings: { [key: string]: any } = {};
+    for (const key in settings) {
+      if (Object.prototype.hasOwnProperty.call(settings, key) && settings[key as keyof CustomizationSettings] !== undefined) {
+        cleanedSettings[key] = settings[key as keyof CustomizationSettings];
+      }
+    }
+    
+    // Update the customization field in the user document with the cleaned settings
     await updateDoc(userDocRef, {
-      customization: settings,
+      customization: cleanedSettings,
       lastUpdated: new Date()
     });
     

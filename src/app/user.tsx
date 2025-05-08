@@ -1,5 +1,6 @@
 // user.ts
 import { Timestamp } from 'firebase/firestore';
+import { CustomizationSettings } from './types/customization';
 
 export interface Partner {
   company: string;
@@ -28,7 +29,7 @@ export interface SocialMedia {
 
 export interface ContentExample {
   title: string;
-  platform: 'Instagram' | 'YouTube' | 'Twitter' | 'TikTok' | 'Facebook' | 'LinkedIn';
+  platform: 'Instagram' | 'YouTube' | 'Twitter' | 'X' | 'TikTok' | 'Facebook' | 'LinkedIn';
   url: string;
   description?: string;
   imageUrl?: string;
@@ -134,4 +135,28 @@ export interface User {
     contactClicks: number;
     lastUpdated: Timestamp;
   };
+
+  customization?: CustomizationSettings;
+
+  createdAt?: Timestamp;
+  lastLogin?: Timestamp;
+  profileLastUpdated?: Timestamp;
+}
+
+export interface SocialMediaLink {
+  platform: string;
+  handle?: string;
+  url?: string;
+  code?: string; // OAuth authorization code
+  accessToken?: string; // Access token
+  refreshToken?: string; // Refresh token
+  scope?: string; // OAuth scope
+  followerCount?: number;
+  engagementRate?: number;
+  reachMetrics?: {
+    averageReach: number;
+    averageImpressions: number;
+    averageEngagement: number;
+  };
+  demographics?: AudienceDemographics;
 }
