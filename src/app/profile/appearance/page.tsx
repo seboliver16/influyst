@@ -539,6 +539,127 @@ export default function AppearancePage() {
                       <div>
                         <Label className="text-base font-semibold">Profile Layout</Label>
                         <p className="text-sm text-gray-500 mb-3">Choose the overall structure of your profile.</p>
+                        
+                        {/* New visual layout selector with thumbnails */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                          {Object.entries(LAYOUT_OPTIONS).map(([value, { name, description }]) => (
+                            <div
+                              key={value}
+                              className={`border rounded-lg p-3 cursor-pointer transition-all hover:border-purple-500 ${
+                                previewSettings.layout === value 
+                                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 ring-1 ring-purple-500' 
+                                  : 'border-gray-200 dark:border-gray-700'
+                              }`}
+                              onClick={() => setPreviewSettings({...previewSettings, layout: value as LayoutOption})}
+                            >
+                              <div className="relative h-20 mb-2 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+                                {/* Layout preview thumbnails */}
+                                {value === 'default' && (
+                                  <div className="absolute inset-0 flex">
+                                    <div className="w-1/3 h-full bg-gray-300 dark:bg-gray-700 p-1">
+                                      <div className="w-full h-1/3 rounded-full bg-gray-400 dark:bg-gray-600 mb-1"></div>
+                                      <div className="w-full h-8 rounded-sm bg-gray-400 dark:bg-gray-600"></div>
+                                    </div>
+                                    <div className="w-2/3 h-full bg-white dark:bg-gray-800 p-1">
+                                      <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                      <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                      <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {value === 'creator' && (
+                                  <div className="absolute inset-0 flex flex-col">
+                                    <div className="h-2/3 bg-purple-400 dark:bg-purple-700 flex items-center justify-center">
+                                      <div className="w-5 h-5 rounded-full bg-white"></div>
+                                    </div>
+                                    <div className="h-1/3 bg-white dark:bg-gray-800 p-1">
+                                      <div className="w-full h-1 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                      <div className="w-full h-1 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {value === 'sidebar' && (
+                                  <div className="absolute inset-0 flex">
+                                    <div className="w-1/4 h-full bg-gray-300 dark:bg-gray-700 p-1">
+                                      <div className="w-full h-3 rounded-full bg-gray-400 dark:bg-gray-600 mb-1"></div>
+                                      <div className="w-full h-2 bg-gray-400 dark:bg-gray-600 mb-1"></div>
+                                      <div className="w-full h-2 bg-gray-400 dark:bg-gray-600 mb-1"></div>
+                                    </div>
+                                    <div className="w-3/4 h-full bg-white dark:bg-gray-800 p-1">
+                                      <div className="w-full h-3 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                      <div className="w-full h-8 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {value === 'minimal' && (
+                                  <div className="absolute inset-0 p-1">
+                                    <div className="w-full h-3 rounded-full bg-gray-300 dark:bg-gray-700 mb-2"></div>
+                                    <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    <div className="w-full h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                  </div>
+                                )}
+                                
+                                {value === 'centered' && (
+                                  <div className="absolute inset-0 p-1 flex flex-col items-center">
+                                    <div className="w-1/3 h-4 rounded-full bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    <div className="w-2/3 h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                    <div className="w-2/3 h-2 bg-gray-300 dark:bg-gray-700 mb-1"></div>
+                                  </div>
+                                )}
+                                
+                                {value === 'grid' && (
+                                  <div className="absolute inset-0 p-1 grid grid-cols-2 gap-1">
+                                    <div className="bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    <div className="bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    <div className="bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    <div className="bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                  </div>
+                                )}
+                                
+                                {value === 'masonry' && (
+                                  <div className="absolute inset-0 p-1 flex">
+                                    <div className="w-1/3 h-full pr-1 flex flex-col gap-1">
+                                      <div className="h-2/3 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                      <div className="h-1/3 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    </div>
+                                    <div className="w-1/3 h-full px-0.5 flex flex-col gap-1">
+                                      <div className="h-1/3 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                      <div className="h-2/3 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    </div>
+                                    <div className="w-1/3 h-full pl-1 flex flex-col gap-1">
+                                      <div className="h-1/2 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                      <div className="h-1/2 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {value === 'cards' && (
+                                  <div className="absolute inset-0 p-1 grid grid-cols-2 gap-1">
+                                    <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm"></div>
+                                    <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm"></div>
+                                    <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm"></div>
+                                    <div className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm"></div>
+                                  </div>
+                                )}
+
+                                {/* For other layouts, display a simple placeholder */}
+                                {!['default', 'creator', 'sidebar', 'minimal', 'centered', 'grid', 'masonry', 'cards'].includes(value) && (
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <span className="text-xs text-gray-400 dark:text-gray-500 font-medium">{name}</span>
+                                  </div>
+                                )}
+                              </div>
+                              <p className="font-medium text-sm">{name}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{description}</p>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        {/* Enhanced select dropdown for all layouts */}
                         <Select 
                           value={previewSettings.layout}
                           onValueChange={(value) => setPreviewSettings({...previewSettings, layout: value as LayoutOption})}
@@ -547,15 +668,18 @@ export default function AppearancePage() {
                             <SelectValue placeholder="Select layout" />
                           </SelectTrigger>
                           <SelectContent>
-                            {Object.entries(LAYOUT_OPTIONS).map(([value, { name }]) => (
-                              <SelectItem key={value} value={value}>{name}</SelectItem>
+                            {Object.entries(LAYOUT_OPTIONS).map(([value, { name, description }]) => (
+                              <SelectItem key={value} value={value}>
+                                <div>
+                                  <span className="font-medium">{name}</span>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+                                </div>
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
-                      
-                      <Separator />
-                      
+
                       <div>
                         <Label className="text-base font-semibold">Background</Label>
                         <p className="text-sm text-gray-500 mb-3">Choose a background image or pattern for your profile.</p>
@@ -754,6 +878,43 @@ export default function AppearancePage() {
                                     onChange={(e) => setPreviewSettings({
                                       ...previewSettings,
                                       backgroundPatternScale: parseInt(e.target.value)
+                                    })}
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+
+                                <Separator />
+
+                                <div className="flex items-center space-x-2 mt-4 mb-4">
+                                  <Switch 
+                                    id="top-gradient"
+                                    checked={previewSettings.enableTopGradient !== false}
+                                    onCheckedChange={(checked) => setPreviewSettings({
+                                      ...previewSettings, 
+                                      enableTopGradient: checked
+                                    })}
+                                  />
+                                  <Label htmlFor="top-gradient" className="text-sm">
+                                    Enable top gradient (background will be behind all content when disabled)
+                                  </Label>
+                                </div>
+
+                                <div>
+                                  <div className="flex justify-between mb-1">
+                                    <Label htmlFor="pattern-opacity" className="text-sm">
+                                      Pattern Opacity: {previewSettings.backgroundPatternOpacity || 30}%
+                                    </Label>
+                                  </div>
+                                  <Input 
+                                    id="pattern-opacity"
+                                    type="range" 
+                                    min={5} 
+                                    max={100} 
+                                    step={5}
+                                    value={previewSettings.backgroundPatternOpacity || 30}
+                                    onChange={(e) => setPreviewSettings({
+                                      ...previewSettings,
+                                      backgroundPatternOpacity: parseInt(e.target.value)
                                     })}
                                     className="cursor-pointer"
                                   />

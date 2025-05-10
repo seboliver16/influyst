@@ -4,6 +4,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { User, Partner, ContentExample, ServiceOffering, Testimonial } from '../app/user'; // Adjust path as needed
 import { CustomizationSettings, ContentGridOption, ContentSectionOption, DEFAULT_CUSTOMIZATION, FontFamilyOption } from '../app/types/customization'; // Adjust path as needed
+import LayoutWrapper from '../../components/layouts/LayoutWrapper';
 import {
   FiMail,
   FiCopy,
@@ -154,7 +155,7 @@ const getCardStyles = (customization: CustomizationSettings): React.CSSPropertie
     borderRadius: 'var(--card-radius)',
     borderWidth: 'var(--border-width)',
     borderColor: customization.cardBorderColor || `rgba(var(--accent-rgb), ${customization.theme === 'dark' ? 0.3 : 0.2})`,
-    backgroundColor: customization.cardBackgroundColor || (customization.theme === 'dark' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)'),
+    backgroundColor: customization.cardBackgroundColor || (customization.theme === 'dark' ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.95)'),
     transition: 'all 0.3s ease',
   };
 
@@ -727,12 +728,26 @@ const getContentGridClasses = (customization: CustomizationSettings): string => 
   switch (customization.contentGridLayout) {
     case 'minimal': 
       return `${baseGridClasses} grid-cols-1 sm:grid-cols-2 gap-4`;
+    
     case 'expanded': 
       return `${baseGridClasses} grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6`;
+    
     case 'featured': 
-      // Note: Featured layout uses flex, so items-start doesn't apply directly here
-      // Ensure the flex container allows children to size naturally
-      return 'flex flex-col gap-6'; 
+      // First item is featured (larger) with the rest in a grid
+      return 'grid grid-cols-1 gap-6 [&>*:first-child]:sm:col-span-2 [&>*:first-child]:sm:row-span-2 [&>*:first-child]:sm:scale-100 sm:grid-cols-2 lg:grid-cols-3';
+    
+    case 'masonry':
+      // Pinterest-style masonry grid
+      return 'columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4 [&>*]:mb-4 [&>*]:break-inside-avoid [&>*]:inline-block [&>*]:w-full';
+    
+    case 'alternating':
+      // Alternating full-width and two-column rows
+      return 'grid grid-cols-1 md:grid-cols-2 gap-6 [&>*:nth-child(4n+1)]:md:col-span-2 [&>*:nth-child(4n+4)]:md:col-span-2';
+    
+    case 'interactive':
+      // Interactive grid with hover effects
+      return `${baseGridClasses} grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 [&>*]:transition-all [&>*]:duration-300 [&>*:hover]:scale-105 [&>*:hover]:shadow-lg [&>*:hover]:z-10 [&>*]:cursor-pointer`;
+    
     default: // standard
       return `${baseGridClasses} grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`;
   }
@@ -742,13 +757,52 @@ const getContentGridClasses = (customization: CustomizationSettings): string => 
 const getLayoutClasses = (customization: CustomizationSettings): string => {
   switch (customization.layout) {
     case 'minimal':
-      return 'max-w-3xl mx-auto'; // Single-column, narrower
+      return 'max-w-3xl mx-auto space-y-8'; // Single-column, narrower with more spacing
+    
     case 'centered':
-      return 'max-w-4xl mx-auto text-center'; // Centered content, medium width
+      return 'max-w-4xl mx-auto text-center flex flex-col items-center space-y-10'; // Centered content, medium width
+    
     case 'grid':
-      return 'max-w-7xl grid-focused'; // Wider container optimized for grid layouts
+      return 'max-w-7xl mx-auto grid-focused grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'; // Wider container optimized for grid layouts
+    
+    case 'sidebar':
+      // Fixed sidebar with main content properly positioned
+      return 'max-w-6xl mx-auto md:flex md:gap-8 sidebar-layout'; // Flexible layout with sidebar
+    
+    case 'creator':
+      // New layout focused on creator with profile pic at top and gradient into content
+      return 'max-w-5xl mx-auto creator-layout space-y-12'; // Creative profile-focused layout
+    
+    case 'magazine':
+      // Dynamic multi-column layout inspired by editorial design with proper spacing
+      return 'max-w-6xl mx-auto magazine-layout md:columns-2 lg:columns-3 space-y-10 gap-8';
+    
+    case 'portfolio':
+      // Image-focused layout ideal for visual creators with proper card alignment
+      return 'max-w-7xl mx-auto portfolio-layout grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 rounded-lg';
+    
+    case 'creative':
+      // Unique asymmetrical layout with creative positioning and improved styling
+      return 'max-w-7xl mx-auto creative-layout grid grid-cols-1 md:grid-cols-6 gap-6 [&>section:nth-child(odd)]:md:col-span-4 [&>section:nth-child(even)]:md:col-span-2 [&>section:nth-child(3n)]:md:col-span-3 [&>section:nth-child(5n)]:md:col-span-6';
+    
+    case 'masonry':
+      // Pinterest-style grid with varying heights and improved spacing
+      return 'max-w-7xl mx-auto masonry-layout columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6 [&>*]:mb-6 [&>*]:break-inside-avoid [&>*]:inline-block [&>*]:w-full';
+    
+    case 'fullscreen':
+      // Immersive full-viewport sections with enhanced animations and transitions
+      return 'max-w-none mx-auto fullscreen-layout space-y-24 [&>section]:min-h-[80vh] [&>section]:flex [&>section]:flex-col [&>section]:justify-center [&>section]:items-center [&>section]:p-12 [&>section]:relative [&>section]:rounded-lg [&>section]:shadow-lg [&>section]:overflow-hidden [&>section:nth-child(odd)]:bg-gradient-to-r [&>section:nth-child(odd)]:from-gray-50/80 [&>section:nth-child(odd)]:to-white/80 [&>section:nth-child(even)]:bg-gradient-to-l [&>section:nth-child(even)]:from-gray-50/80 [&>section:nth-child(even)]:to-white/80 dark:[&>section:nth-child(odd)]:from-gray-900/80 dark:[&>section:nth-child(odd)]:to-gray-800/80 dark:[&>section:nth-child(even)]:from-gray-900/80 dark:[&>section:nth-child(even)]:to-gray-800/80';
+    
+    case 'cards':
+      // Content displayed as interactive cards with refined styling
+      return 'max-w-6xl mx-auto cards-layout grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 [&>section]:bg-white [&>section]:dark:bg-gray-800 [&>section]:p-8 [&>section]:rounded-xl [&>section]:shadow-md [&>section]:border [&>section]:dark:border-gray-700 [&>section]:hover:shadow-lg [&>section]:transition-all [&>section]:duration-300';
+    
+    case 'carousel':
+      // Horizontal scrolling sections with improved visual indicators
+      return 'max-w-none mx-auto carousel-layout space-y-16 [&>section]:pb-4 [&>section]:relative [&>section:after]:content-[""] [&>section:after]:absolute [&>section:after]:bottom-0 [&>section:after]:left-0 [&>section:after]:right-0 [&>section:after]:h-1 [&>section:after]:bg-gradient-to-r [&>section:after]:from-transparent [&>section:after]:via-accent-color/30 [&>section:after]:to-transparent [&>section]:overflow-x-auto [&>section]:scrollbar-thin [&>section]:whitespace-nowrap [&>section]:scrollbar-thumb-gray-300 [&>section]:scrollbar-track-gray-100 [&>section]:dark:scrollbar-thumb-gray-600 [&>section]:dark:scrollbar-track-gray-800 [&>section]:p-4 [&>section>*]:inline-block [&>section>*]:whitespace-normal [&>section>*]:w-[280px] [&>section>*:not(:last-child)]:mr-6 [&>section]:after:z-10';
+    
     default: // 'default'
-      return 'max-w-6xl'; // Standard two-column layout
+      return 'max-w-6xl mx-auto standard-layout grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-8'; // Standard two-column layout
   }
 };
 
@@ -765,7 +819,7 @@ const getProfileImageClasses = (customization: CustomizationSettings): string =>
         shapeClass = 'rounded-lg';
         break;
       case 'hexagon':
-        shapeClass = 'hexagon-shape'; // This would need a CSS class defined elsewhere
+        shapeClass = 'clip-path-hexagon'; // Updated class for hexagon shape
         break;
       case 'circle':
       default:
@@ -929,9 +983,12 @@ export const UserProfileContent: React.FC<UserProfileContentProps> = ({ user, cu
     '--accent-color': mergedCustomization.accentColor,
     '--accent-rgb': hexToRgb(mergedCustomization.accentColor),
     '--secondary-color': mergedCustomization.secondaryColor || mergedCustomization.accentColor,
-    '--heading-color': mergedCustomization.headingColor || 'inherit',
-    '--body-text-color': mergedCustomization.bodyTextColor || 'inherit',
-    '--link-text-color': mergedCustomization.linkTextColor || mergedCustomization.accentColor,
+    '--heading-color': mergedCustomization.headingColor || (mergedCustomization.theme === 'dark' ? '#f3f4f6' : '#1f2937'),
+    '--body-color': mergedCustomization.bodyTextColor || (mergedCustomization.theme === 'dark' ? '#d1d5db' : '#4b5563'),
+    '--link-color': mergedCustomization.linkTextColor || mergedCustomization.accentColor,
+    '--border-color': `rgba(var(--accent-rgb), ${mergedCustomization.theme === 'dark' ? 0.3 : 0.2})`,
+    '--creator-text-color': mergedCustomization.theme === 'dark' ? '#ffffff' : '#1f2937',
+    '--creator-secondary-text-color': mergedCustomization.theme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(31, 41, 55, 0.8)',
     fontFamily: getFontFamily(mergedCustomization.fontFamily),
   } as React.CSSProperties;
 
@@ -1134,13 +1191,13 @@ export const UserProfileContent: React.FC<UserProfileContentProps> = ({ user, cu
                     </Avatar>
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 dark:text-gray-300 mb-3 italic" style={{ color: 'var(--body-text-color)' }}>
+                    <p className="text-gray-600 dark:text-gray-300 mb-3 italic" style={{ color: 'var(--body-color)' }}>
                       &ldquo;{testimonial.text}&rdquo;
                     </p>
                     <div>
                       <p className="font-semibold" style={{ color: 'var(--heading-color)' }}>{testimonial.company}</p>
                       {testimonial.personName && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.personName}, {testimonial.position}</p>
+                        <p className="text-sm" style={{ color: 'var(--body-color)' }}>{testimonial.personName}, {testimonial.position}</p>
                       )}
                     </div>
                   </div>
@@ -1171,7 +1228,7 @@ export const UserProfileContent: React.FC<UserProfileContentProps> = ({ user, cu
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300" style={{ color: 'var(--body-text-color)' }}>
+                <p className="text-gray-600 dark:text-gray-300" style={{ color: 'var(--body-color)' }}>
                   {service.description}
                 </p>
                 {service.deliverables && (
@@ -1255,138 +1312,65 @@ export const UserProfileContent: React.FC<UserProfileContentProps> = ({ user, cu
       ));
   };
 
+  // Consolidate layout dispatch
+  const layoutProps = {
+    user,
+    customization: mergedCustomization,
+    viewMode: effectiveViewMode,
+    containerStyle,
+    coverImageStyle,
+    cardStyle,
+    glassEffect,
+    animationClasses,
+    contentWidthClass,
+    profileImageClasses,
+    renderOrderedSections,
+    renderSection
+  };
+
+  // Always wrap in global CSS variables and render the appropriate layout
   return (
     <div className={`w-full ${mergedCustomization.theme === 'dark' ? 'dark' : ''}`} style={customStyles}>
-      {/* *** Apply containerStyle (background image) here *** */}
-      <div className="dark:bg-gray-900 bg-gray-50 min-h-screen" style={containerStyle}>
-        {/* *** Render cover image div here *** */}
-        <div style={coverImageStyle}>
-          {/* Optional darken overlay for better text visibility */}
-          {mergedCustomization.coverDarken && !mergedCustomization.coverImageUrl && (
-            <div className="absolute inset-0 bg-black/30"></div>
-          )}
-        </div>
-        
-        {/* Main content with responsive width and selected layout */}
-        <div className={`mx-auto px-4 ${contentWidthClass} ${layoutClasses}`}>
-          {/* Profile section with completely opaque background */}
-          <div className={`relative -mt-20 sm:-mt-24 mb-8`}>
-            {/* *** Apply profileCardStyle, ensure border/shadow classes are present *** */}
-            <div className="rounded-lg p-4 sm:p-6 border shadow" style={profileCardStyle}>
-              <div className={`${mergedCustomization.layout === 'centered' ? 'flex flex-col items-center text-center' : 'flex flex-col sm:flex-row'} gap-4 sm:gap-6 items-start ${mergedCustomization.layout !== 'centered' ? 'sm:items-center' : ''}`}>
-                {/* Avatar with configurable size and border */}
-                <Avatar className={`
-                  ${mergedCustomization.profileImageSize === 'small' ? 'h-24 w-24 sm:h-24 sm:w-24' : 
-                    mergedCustomization.profileImageSize === 'large' ? 'h-32 w-32 sm:h-36 sm:w-36' : 
-                    'h-28 w-28 sm:h-32 sm:w-32'} 
-                  ${mergedCustomization.profileImageShape === 'square' ? 'rounded-none' :
-                    mergedCustomization.profileImageShape === 'rounded' ? 'rounded-lg' :
-                    mergedCustomization.profileImageShape === 'hexagon' ? 'hexagon-shape' :
-                    'rounded-full'}
-                  border shadow-lg
-                `} 
-                style={{ 
-                  borderWidth: mergedCustomization.profileImageBorderWidth || 4,
-                  borderColor: mergedCustomization.theme === 'dark' ? 'rgb(31, 41, 55)' : 'white',
-                  ...(mergedCustomization.imageFilter && mergedCustomization.imageFilter !== 'none' ? 
-                    getImageFilterStyle(mergedCustomization) : {})
-                }}>
-                  <AvatarImage src={user.profilePicture || '/placeholder-avatar.jpg'} alt={user.name || 'User'} />
-                  <AvatarFallback>{user.name?.charAt(0) || 'U'}</AvatarFallback>
-                </Avatar>
-                
-                {/* User info with responsive layout */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <h1 className="text-2xl sm:text-3xl font-bold truncate" style={{ color: 'var(--heading-color)' }}>
-                        {user.name || 'User'}
-                      </h1>
-                      <div className="flex items-center gap-2 mt-1 text-gray-600 dark:text-gray-400">
-                        <span className="text-sm sm:text-base">@{user.username || 'username'}</span>
-                        {user.location && (
-                          <>
-                            <span className="hidden sm:inline">•</span>
-                            <span className="flex items-center gap-1 text-sm">
-                              <FiMapPin className="h-3 w-3" />
-                              {user.location}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Contact button with improved contrast */}
-                    <Button 
-                      className={getPrimaryButtonClasses(mergedCustomization.buttonStyle)}
-                      style={{ 
-                        backgroundColor: mergedCustomization.buttonStyle === 'filled' ? 'var(--accent-color)' : 'transparent',
-                        color: getButtonContrastColor(mergedCustomization.buttonStyle, mergedCustomization.theme),
-                        borderColor: 'var(--accent-color)'
-                      }}
-                    >
-                      <FiMail className="mr-2 h-4 w-4" />
-                      Contact
-                    </Button>
-                  </div>
-                  
-                  {/* Bio section with customizable spacing */}
-                  {user.bio && (
-                    <div className={`${bioSectionSpacingClass} max-w-3xl`}>
-                      <p className="text-gray-700 dark:text-gray-300" style={{ color: 'var(--body-text-color)' }}>
-                        {user.bio}
-                      </p>
-                    </div>
-                  )}
-                  
-                  {/* Tags/Categories */}
-                  {user.industries && Array.isArray(user.industries) && user.industries.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {user.industries.map((industry, i) => (
-                        <Badge 
-                          key={i} 
-                          className="bg-opacity-20 dark:bg-opacity-30 hover:bg-opacity-30 dark:hover:bg-opacity-40 transition-all"
-                          style={{ 
-                            backgroundColor: `rgba(var(--accent-rgb), 0.15)`,
-                            color: 'var(--accent-color)',
-                            borderColor: `rgba(var(--accent-rgb), 0.3)`
-                          }}
-                        >
-                          {industry}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Content sections with layout adjustments based on selected layout */}
-          <div className={`mb-20 ${mergedCustomization.layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-8' : 'space-y-8'}`}>
-            {renderOrderedSections()}
-          </div>
-        </div>
-        
-        {/* Made with Influyst footer */}
-        <footer className="py-6 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 text-center">
-          <div className={`mx-auto px-4 ${contentWidthClass}`}>
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="text-gray-500 dark:text-gray-400 text-sm">Made with</span>
-              <a 
-                href="https://influyst.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="font-medium transition-colors hover:text-accent flex items-center"
-                style={{ color: 'var(--accent-color)' }}
-              >
-                Influyst
-                <FiExternalLink className="ml-1 h-3 w-3" />
-              </a>
-            </div>
-          </div>
-        </footer>
-      </div>
+      <style jsx global>{`
+        /* Universal layout global styles */
+        .clip-path-hexagon {
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        /* Sidebar layout styles */
+        .sidebar-layout .profile-sidebar {
+          position: sticky;
+          top: 1rem;
+          height: max-content;
+        }
+        /* Magazine layout styles */
+        .magazine-layout > section {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          margin-bottom: 2rem;
+        }
+        /* Creator layout gradient animation */
+        .creator-gradient {
+          background-size: 200% 200%;
+          animation: gradientShift 15s ease infinite;
+          background-image: linear-gradient(45deg, var(--accent-color) 0%, var(--secondary-color) 50%, var(--accent-color) 100%);
+        }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }}
+        /* Masonry layout fix */
+        .masonry-layout > section { break-inside: avoid; margin-bottom: 1.5rem; }
+        /* Carousel layout scrollbar */
+        .carousel-layout > section { scrollbar-width: thin; -ms-overflow-style: none; }
+        .carousel-layout > section::-webkit-scrollbar { height: 6px; }
+        .carousel-layout > section::-webkit-scrollbar-thumb { background-color: var(--accent-color); opacity: 0.5; border-radius: 9999px; }
+        /* Fullscreen layout */
+        .fullscreen-layout > section { min-height: 90vh; position: relative; border-radius: 0.5rem; margin-bottom: 2rem; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); }
+        /* Creative layout styling */
+        .creative-layout > section { padding: 1.5rem; border-radius: 0.5rem; background-color: white; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .dark .creative-layout > section { background-color: rgb(30, 30, 30); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        /* Standard layout base styles */
+        .standard-layout { display: grid; grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .standard-layout { grid-template-columns: 2fr 3fr; gap: 2rem; } }
+      `}</style>
+      <LayoutWrapper {...layoutProps} />
     </div>
   );
 };

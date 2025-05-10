@@ -250,6 +250,9 @@ export const getContainerStyle = (customization: CustomizationSettings): React.C
     const patternDef = BACKGROUND_PATTERNS[customization.backgroundPattern] || BACKGROUND_PATTERNS.dots;
     const colors = patternDef.colors || [accentColor, secondaryColor, tertiaryColor];
     
+    // Helper function to encode SVG as background image URL
+    const svgEncoded = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    
     // For basic patterns, use simple SVGs
     if (['dots', 'grid', 'waves'].includes(customization.backgroundPattern)) {
       const patternColor = isDark ? 'rgba(255,255,255,' + (patternOpacity / 100) + ')' : 'rgba(0,0,0,' + (patternOpacity / 100) + ')';
@@ -257,7 +260,6 @@ export const getContainerStyle = (customization: CustomizationSettings): React.C
     
       // Generate pattern SVG
       let patternSvg = '';
-      const svgEncoded = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
     
       switch (customization.backgroundPattern) {
         case 'dots':
@@ -504,6 +506,234 @@ export const getContainerStyle = (customization: CustomizationSettings): React.C
           `,
           backgroundSize: `100% 100%, ${10 * patternScale/100}px ${10 * patternScale/100}px`,
           backgroundAttachment: 'fixed',
+        };
+        
+      // New vibrant and modern patterns
+      case 'holographic':
+        return {
+          background: `
+            linear-gradient(135deg, rgba(0, 0, 0, ${opacity * 0.8}) 0%, rgba(0, 0, 0, ${opacity * 0.8}) 100%),
+            linear-gradient(45deg, rgba(255, 0, 255, ${opacity * 0.5}) 0%, rgba(0, 255, 255, ${opacity * 0.5}) 25%, rgba(255, 255, 0, ${opacity * 0.5}) 50%, rgba(255, 0, 170, ${opacity * 0.5}) 75%, rgba(0, 170, 255, ${opacity * 0.5}) 100%)
+          `,
+          backgroundSize: `100% 100%, ${200 * patternScale/100}% ${200 * patternScale/100}%`,
+          backgroundAttachment: 'fixed',
+          animation: 'gradient-shift 15s ease infinite',
+          backgroundBlendMode: 'normal, screen',
+        };
+        
+      case 'circuit':
+        const circuitSvg = `<svg width="${80 * patternScale/100}" height="${80 * patternScale/100}" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" fill="none" />
+          <circle cx="20" cy="20" r="2" fill="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" />
+          <circle cx="60" cy="20" r="2" fill="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" />
+          <circle cx="20" cy="60" r="2" fill="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" />
+          <circle cx="60" cy="60" r="2" fill="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" />
+          <circle cx="40" cy="40" r="4" fill="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" />
+          <path d="M20 20H40V40" stroke="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" fill="none" />
+          <path d="M60 20H50V60H60" stroke="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" fill="none" />
+          <path d="M20 60H30V30" stroke="${colors[0]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" fill="none" />
+        </svg>`;
+        return {
+          background: `
+            linear-gradient(0deg, ${isDark ? '#111827' : '#f9fafb'}, ${isDark ? '#111827' : '#f9fafb'}),
+            ${svgEncoded(circuitSvg)}
+          `,
+          backgroundSize: `auto, ${80 * patternScale/100}px ${80 * patternScale/100}px`,
+          backgroundPosition: 'center, center',
+          backgroundRepeat: 'no-repeat, repeat',
+        };
+        
+      case 'marble':
+        return {
+          background: `
+            linear-gradient(${isDark ? '120deg' : '45deg'}, 
+              ${colors[0]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 0%, 
+              ${colors[1]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 40%, 
+              ${colors[2]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 60%, 
+              ${colors[3]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 100%),
+            radial-gradient(circle at 30% 30%, 
+              ${colors[0]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%),
+            radial-gradient(circle at 70% 70%, 
+              ${colors[1]}${Math.round(opacity * 100).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%)
+          `,
+          backgroundSize: `100% 100%, ${100 * patternScale/100}% ${100 * patternScale/100}%, ${120 * patternScale/100}% ${120 * patternScale/100}%`,
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'normal, overlay, overlay',
+        };
+        
+      case 'aurora':
+        return {
+          background: `
+            linear-gradient(0deg, ${isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'}, ${isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)'}),
+            linear-gradient(215deg, 
+              ${colors[0]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            linear-gradient(145deg, 
+              ${colors[1]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            linear-gradient(325deg, 
+              ${colors[2]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            linear-gradient(45deg, 
+              ${colors[3]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%)
+          `,
+          backgroundSize: `100% 100%, 200% 200%, 200% 200%, 200% 200%, 200% 200%`,
+          backgroundPosition: `center, 0% 0%, 100% 0%, 100% 100%, 0% 100%`,
+          backgroundAttachment: 'fixed',
+          animation: 'gradient-shift 15s ease infinite',
+          backgroundBlendMode: 'normal, screen, screen, screen, screen',
+        };
+        
+      case 'glitch':
+        return {
+          background: `
+            linear-gradient(0deg, ${isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)'}, ${isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)'}),
+            linear-gradient(90deg, 
+              transparent 5%, 
+              ${colors[0]}${Math.round(opacity * 80).toString(16).padStart(2, '0')} 5%, 
+              ${colors[0]}${Math.round(opacity * 80).toString(16).padStart(2, '0')} 10%, 
+              transparent 10%, 
+              transparent 15%, 
+              ${colors[1]}${Math.round(opacity * 80).toString(16).padStart(2, '0')} 15%, 
+              ${colors[1]}${Math.round(opacity * 80).toString(16).padStart(2, '0')} 20%, 
+              transparent 20%),
+            linear-gradient(180deg, 
+              transparent 0%, 
+              transparent 40%, 
+              ${colors[2]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 40%, 
+              ${colors[2]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 42%, 
+              transparent 42%, 
+              transparent 60%, 
+              ${colors[1]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 60%, 
+              ${colors[1]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 62%, 
+              transparent 62%, 
+              transparent 80%, 
+              ${colors[0]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 80%, 
+              ${colors[0]}${Math.round(opacity * 40).toString(16).padStart(2, '0')} 82%, 
+              transparent 82%)
+          `,
+          backgroundSize: `100% 100%, ${300 * patternScale/100}% 100%, 100% ${80 * patternScale/100}px`,
+          backgroundAttachment: 'fixed',
+        };
+        
+      case 'gradient-mesh':
+        return {
+          background: `
+            linear-gradient(0deg, transparent 0%, transparent 100%),
+            radial-gradient(circle at 20% 20%, 
+              ${colors[0]}${Math.round(opacity * 200).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            radial-gradient(circle at 80% 20%, 
+              ${colors[1]}${Math.round(opacity * 200).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            radial-gradient(circle at 20% 80%, 
+              ${colors[2]}${Math.round(opacity * 200).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%),
+            radial-gradient(circle at 80% 80%, 
+              ${colors[3]}${Math.round(opacity * 200).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%)
+          `,
+          backgroundSize: `100% 100%, ${200 * patternScale/100}% ${200 * patternScale/100}%`,
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'normal, screen, screen, screen, screen',
+        };
+        
+      case 'vaporwave':
+        const sunSize = 30 * patternScale/100;
+        const gridSize = 40 * patternScale/100;
+        const vaporwaveSvg = `<svg width="${100 * patternScale/100}" height="${120 * patternScale/100}" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="${30 + sunSize}" r="${sunSize}" fill="${colors[0]}${Math.round(opacity * 200).toString(16).padStart(2, '0')}" />
+          <line x1="0" y1="90" x2="100" y2="90" stroke="${colors[3]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" stroke-width="1" />
+          ${Array.from({length: 10}, (_, i) => {
+            return `<line x1="${i * gridSize}" y1="90" x2="${50 + (i * gridSize) / 2}" y2="130" stroke="${colors[2]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" stroke-width="1" />
+            <line x1="${100 - i * gridSize}" y1="90" x2="${50 - (i * gridSize) / 2}" y2="130" stroke="${colors[2]}${Math.round(opacity * 255).toString(16).padStart(2, '0')}" stroke-width="1" />`;
+          }).join('')}
+        </svg>`;
+        return {
+          background: `
+            linear-gradient(180deg, 
+              ${colors[4]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              ${colors[0]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 20%, 
+              ${colors[1]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 40%, 
+              ${colors[2]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 60%, 
+              ${colors[3]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 80%),
+            ${svgEncoded(vaporwaveSvg)}
+          `,
+          backgroundSize: `100% 100%, ${120 * patternScale/100}% ${120 * patternScale/100}%`,
+          backgroundPosition: 'center, center bottom',
+          backgroundRepeat: 'no-repeat, repeat-x',
+          backgroundAttachment: 'fixed',
+        };
+        
+      case 'cosmic':
+        return {
+          background: `
+            linear-gradient(0deg, ${colors[0]} 0%, ${colors[1]} 100%),
+            radial-gradient(circle at 20% 30%, 
+              ${colors[2]}${Math.round(opacity * 255).toString(16).padStart(2, '0')} 0%, 
+              transparent 20%),
+            radial-gradient(circle at 70% 65%, 
+              ${colors[3]}${Math.round(opacity * 255).toString(16).padStart(2, '0')} 0%, 
+              transparent 30%),
+            radial-gradient(circle at 50% 50%, 
+              ${colors[4]}${Math.round(opacity * 150).toString(16).padStart(2, '0')} 0%, 
+              transparent 40%)
+          `,
+          backgroundSize: `100% 100%, ${150 * patternScale/100}% ${150 * patternScale/100}%`,
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'normal, screen, screen, screen',
+        };
+        
+      case 'neon-grid':
+        const gridLineColor = isDark ? colors[0] : colors[3];
+        const neonGridSvg = `<svg width="${40 * patternScale/100}" height="${40 * patternScale/100}" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect width="40" height="40" fill="none" />
+          <line x1="0" y1="0" x2="40" y2="0" stroke="${gridLineColor}${Math.round(opacity * 200).toString(16).padStart(2, '0')}" stroke-width="1" />
+          <line x1="0" y1="0" x2="0" y2="40" stroke="${gridLineColor}${Math.round(opacity * 200).toString(16).padStart(2, '0')}" stroke-width="1" />
+        </svg>`;
+        return {
+          background: `
+            linear-gradient(0deg, ${isDark ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.85)'}, ${isDark ? 'rgba(0, 0, 0, 0.95)' : 'rgba(0, 0, 0, 0.9)'}),
+            linear-gradient(180deg, 
+              ${colors[1]}${Math.round(opacity * 30).toString(16).padStart(2, '0')} 0%, 
+              ${colors[2]}${Math.round(opacity * 30).toString(16).padStart(2, '0')} 100%),
+            ${svgEncoded(neonGridSvg)},
+            radial-gradient(circle at 50% 50%, transparent 0%, ${colors[3]} 150%)
+          `,
+          backgroundSize: `100% 100%, 100% 100%, ${40 * patternScale/100}px ${40 * patternScale/100}px, 200% 200%`,
+          backgroundPosition: 'center, center, center, center',
+          backgroundRepeat: 'no-repeat, no-repeat, repeat, no-repeat',
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'normal, overlay, normal, normal',
+          perspective: '1000px',
+        };
+        
+      case 'watercolor':
+        return {
+          background: `
+            linear-gradient(0deg, transparent 0%, transparent 100%),
+            radial-gradient(ellipse at 30% 40%, 
+              ${colors[0]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%),
+            radial-gradient(ellipse at 60% 30%, 
+              ${colors[1]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%),
+            radial-gradient(ellipse at 40% 70%, 
+              ${colors[2]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%),
+            radial-gradient(ellipse at 70% 60%, 
+              ${colors[3]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%),
+            radial-gradient(ellipse at 80% 20%, 
+              ${colors[4]}${Math.round(opacity * 180).toString(16).padStart(2, '0')} 0%, 
+              transparent 50%)
+          `,
+          backgroundSize: `100% 100%, ${140 * patternScale/100}% ${140 * patternScale/100}%`,
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'normal, overlay, overlay, overlay, overlay, overlay',
         };
         
       default:

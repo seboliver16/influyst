@@ -20,7 +20,7 @@ const InstagramEmbed: React.FC<InstagramEmbedProps> = ({ url }) => {
         className="absolute top-0 left-0 w-full h-full border-none"
         frameBorder="0"
         scrolling="no"
-        allowTransparency
+        allowTransparency={true}
         allowFullScreen
         loading="lazy"
       ></iframe>

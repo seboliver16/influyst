@@ -4,7 +4,20 @@
 export type ThemeOption = 'light' | 'dark' | 'system' | 'custom';
 
 // Available layout options
-export type LayoutOption = 'default' | 'minimal' | 'centered' | 'grid' | 'magazine' | 'portfolio' | 'creative';
+export type LayoutOption = 
+  'default' | 
+  'minimal' | 
+  'centered' | 
+  'grid' | 
+  'sidebar' |
+  'magazine' | 
+  'portfolio' | 
+  'creative' |
+  'masonry' |
+  'fullscreen' |
+  'cards' |
+  'carousel' |
+  'creator';
 
 // Available button style options
 export type ButtonStyleOption = 
@@ -68,7 +81,18 @@ export type BackgroundPatternOption =
   'artistic' |
   'luxury' |
   'fashion' |
-  'fitness';
+  'fitness' |
+  // New vibrant and modern patterns
+  'holographic' |
+  'circuit' |
+  'marble' |
+  'aurora' |
+  'glitch' |
+  'gradient-mesh' |
+  'vaporwave' |
+  'cosmic' |
+  'neon-grid' |
+  'watercolor';
 
 // Animation intensity options
 export type AnimationIntensityOption = 'none' | 'minimal' | 'moderate' | 'advanced' | 'extreme';
@@ -132,6 +156,12 @@ export interface CustomizationSettings {
   
   // Cover image URL (header/profile cover)
   coverImageUrl?: string;
+  
+  // Whether to show the cover gradient or not (gradient is shown by default)
+  enableCoverGradient?: boolean;
+  
+  // Whether to show the top gradient or not (gradient is shown by default)
+  enableTopGradient?: boolean;
   
   // Background pattern selection
   backgroundPattern?: BackgroundPatternOption;
@@ -355,6 +385,7 @@ export const DEFAULT_CUSTOMIZATION: CustomizationSettings = {
   enableBackdropFilter: false,
   backdropFilterIntensity: 5,
   coverDarken: true,
+  enableTopGradient: true,
   enableEmbeddedContent: true,
   hideContentOnMobile: false,
   backgroundPattern: 'minimal',
@@ -405,6 +436,10 @@ export const LAYOUT_OPTIONS: Record<LayoutOption, { name: string; description: s
     name: 'Grid', 
     description: 'Modern grid-based layout for showcasing multiple content items'
   },
+  sidebar: {
+    name: 'Sidebar',
+    description: 'Fixed sidebar navigation with scrollable main content'
+  },
   magazine: {
     name: 'Magazine',
     description: 'Dynamic multi-column layout inspired by editorial design'
@@ -416,6 +451,26 @@ export const LAYOUT_OPTIONS: Record<LayoutOption, { name: string; description: s
   creative: {
     name: 'Creative',
     description: 'Unique asymmetrical layout with creative positioning'
+  },
+  masonry: {
+    name: 'Masonry',
+    description: 'Pinterest-style grid with varying heights and no gaps'
+  },
+  fullscreen: {
+    name: 'Fullscreen',
+    description: 'Immersive full-viewport sections with scroll navigation'
+  },
+  cards: {
+    name: 'Cards',
+    description: 'Content displayed as interactive cards with uniform sizing'
+  },
+  carousel: {
+    name: 'Carousel',
+    description: 'Horizontal scrolling sections with featured content sliders'
+  },
+  creator: {
+    name: 'Creator',
+    description: 'Sleek profile-focused layout with profile picture at top and gradient into content'
   }
 };
 
@@ -556,6 +611,57 @@ export const BACKGROUND_PATTERNS: Record<BackgroundPatternOption, { name: string
     name: 'Fitness & Energy',
     description: 'Dynamic pattern with energetic colors for fitness creators',
     colors: ['#FF0054', '#390099', '#FFBD00']
+  },
+  // New vibrant and modern patterns
+  holographic: {
+    name: 'Holographic',
+    description: 'Shimmering iridescent holographic effect with rainbow colors',
+    colors: ['#FF00FF', '#00FFFF', '#FFFF00', '#FF00AA', '#00AAFF']
+  },
+  circuit: {
+    name: 'Circuit Board',
+    description: 'Tech-inspired pattern resembling electronic circuits',
+    colors: ['#00FF00', '#003311', '#00DD33']
+  },
+  marble: {
+    name: 'Marble',
+    description: 'Elegant marble-like texture with subtle veining',
+    colors: ['#FFFFFF', '#EEEEEE', '#DDDDDD', '#CCCCCC']
+  },
+  aurora: {
+    name: 'Aurora Borealis',
+    description: 'Flowing northern lights inspired color waves',
+    colors: ['#47B8E0', '#9FDFCD', '#FF5666', '#FFB7FF']
+  },
+  glitch: {
+    name: 'Digital Glitch',
+    description: 'Distorted digital glitch effect with scan lines',
+    colors: ['#FF0000', '#00FFFF', '#0000FF']
+  },
+  'gradient-mesh': {
+    name: 'Gradient Mesh',
+    description: 'Smooth, overlapping color gradients forming an organic mesh',
+    colors: ['#FF6CAB', '#7366FF', '#3B86FF', '#12D8FA']
+  },
+  vaporwave: {
+    name: 'Vaporwave',
+    description: 'Retro-futuristic aesthetic with 80s/90s digital art style',
+    colors: ['#FF6AD5', '#C774E8', '#AD8CFF', '#8795E8', '#94D0FF']
+  },
+  cosmic: {
+    name: 'Cosmic Space',
+    description: 'Deep space nebula with stars and cosmic dust',
+    colors: ['#0A001A', '#160040', '#3C0094', '#6C00A8', '#B300B3']
+  },
+  'neon-grid': {
+    name: 'Neon Grid',
+    description: 'Retrowave-style infinite grid with neon glow',
+    colors: ['#FF00FF', '#00FFFF', '#FF9900', '#000000']
+  },
+  watercolor: {
+    name: 'Watercolor Splash',
+    description: 'Soft, flowing watercolor paint splashes and blends',
+    colors: ['#FFCAD4', '#B0D0D3', '#C08497', '#F7AF9D', '#F7E3AF']
   }
 };
 
