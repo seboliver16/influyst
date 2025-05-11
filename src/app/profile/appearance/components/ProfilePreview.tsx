@@ -1,53 +1,16 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from 'react';
-import Image from 'next/image';
-import { User, Partner, ContentExample, ServiceOffering, Testimonial } from '../../../user';
-import { CustomizationSettings, ContentGridOption, ContentSectionOption, DEFAULT_CUSTOMIZATION } from '../../../types/customization';
+import { User } from '../../../user';
+import { CustomizationSettings } from '../../../types/customization';
 import { 
-  FiMail, 
-  FiCopy, 
-  FiInstagram, 
-  FiYoutube, 
-  FiTwitter, 
-  FiLink, 
-  FiHeart, 
-  FiMapPin, 
-  FiCalendar,
-  FiPackage,
-  FiDollarSign,
   FiSmartphone,
   FiMonitor,
-  FiExternalLink,
-  FiMessageCircle,
-  FiVideo,
   FiGrid,
-  FiGlobe,
-  FiClock,
-  FiArrowLeft,
-  FiPlayCircle,
-  FiShare
+  FiGlobe
 } from 'react-icons/fi';
-import { 
-  RiTiktokFill
-} from 'react-icons/ri';
-import { getPrimaryButtonClasses, getButtonContrastColor, getSecondaryButtonClasses } from "../../../../lib/utils";
-
-// Import UI components separately
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle,
-  CardFooter
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserProfileContent } from '../../../../components/UserProfileContent'; // Correct relative path
+import { UserProfileContent } from '../../../../components/UserProfileContent';
 
 interface ProfilePreviewProps {
   user: User;
@@ -146,7 +109,6 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ user, customization }) 
   };
 
   // Main container that holds the preview frame and UserProfileContent
-  // The outer div style will be for the preview frame itself, not the content's background or theme.
   const previewContainerStyle: React.CSSProperties = {
     overflowY: 'auto' as const,
     paddingTop: viewMode === 'mobile' ? '24px' : '0',
@@ -163,7 +125,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ user, customization }) 
             size="sm"
             variant="ghost"
             onClick={() => toggleViewMode('mobile')}
-                                className={`
+            className={`
               rounded-full flex items-center px-3
               ${viewMode === 'mobile' ? 'bg-white dark:bg-gray-700 shadow-sm' : 'bg-transparent text-gray-500 dark:text-gray-400'}
               transition-all duration-200
@@ -219,7 +181,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ user, customization }) 
           style={previewContainerStyle}
           className="flex-grow overflow-y-auto relative"
         >
-          {/* Use the Reusable UserProfileContent Component */}
+          {/* Use the UserProfileContent Component */}
           <UserProfileContent user={user} customization={customization} viewMode={viewMode} />
         </div>
         

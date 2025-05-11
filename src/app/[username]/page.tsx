@@ -42,11 +42,13 @@ export default async function UserProfilePage({ params }: { params: { username: 
   const effectiveCustomization = { ...DEFAULT_CUSTOMIZATION, ...customizationData };
 
   return (
+    <div className="w-full">
       <UserProfileContent 
-         user={user} 
-         customization={effectiveCustomization} 
-         // viewMode is not needed here as it's the actual public page
-       />
+        user={user} 
+        customization={effectiveCustomization} 
+        // viewMode is not needed here as it's the actual public page
+      />
+    </div>
   );
 }
 
